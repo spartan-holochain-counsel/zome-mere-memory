@@ -1,0 +1,10 @@
+manifest_version: "1"
+name: Storage
+description: Simple byte storage
+slots:
+  - id: storage
+    provisioning:
+      strategy: create
+      deferred: false
+    dna:
+      bundled: ../dna/storage.dna
