@@ -14,7 +14,7 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 essence_payloads = "0.1.0"
-hdk = "0.0.103"
+hdk = "0.0.104"
 serde = "1"
 serde_derive = "1"
 thiserror = "1"
