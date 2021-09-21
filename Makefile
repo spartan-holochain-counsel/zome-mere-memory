@@ -15,3 +15,9 @@ $(STORAGE_DNA):		$(MERE_MEMORY_WASM)
 	hc dna pack packs/dna/
 $(STORAGE_APP):		$(STORAGE_DNA)
 	hc app pack packs/app/
+
+
+test:			$(STORAGE_DNA)
+	cd tests; npx mocha integration/test_api.js
+test-debug:		$(STORAGE_DNA)
+	cd tests; LOG_LEVEL=silly npx mocha integration/test_api.js

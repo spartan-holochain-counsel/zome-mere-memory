@@ -3,3 +3,4 @@
 target
 *.happ
 *.dna
+tests/node_modules
