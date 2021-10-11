@@ -7,8 +7,8 @@
   "devDependencies": {
     "@holochain/devhub-entities": "^0.3.0",
     "@whi/holo-hash": "^0.1.5",
-    "@whi/holochain-backdrop": "^0.7.0",
-    "@whi/holochain-client": "^0.7.0",
+    "@whi/holochain-backdrop": "^0.8.0",
+    "@whi/holochain-client": "^0.8.0",
     "@whi/json": "^0.1.3",
     "chai": "^4.3.4",
     "mocha": "^9.1.1",
