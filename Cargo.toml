@@ -1,6 +1,6 @@
 [package]
 name = "hc_zome_mere_memory"
-version = "0.1.0"
+version = "0.0.0"
 authors = ["Matthew Brisebois <matthew.brisebois@holo.host>"]
 edition = "2018"
 license = "CAL-1.0"
@@ -13,10 +13,9 @@ name = "mere_memory"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-essence_payloads = "0.1.0"
-hdk = "0.0.106"
+essence_payloads = "0.1"
+hdk = "0.0.107"
 serde = "1"
-serde_derive = "1"
 thiserror = "1"
 
 [dev-dependencies]

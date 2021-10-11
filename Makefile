@@ -1,7 +1,7 @@
 
 MERE_MEMORY_WASM	= target/wasm32-unknown-unknown/release/mere_memory.wasm
 STORAGE_DNA		= packs/dna/storage.dna
-STORAGE_APP		= packs/app/storage.happ
+STORAGE_APP		= packs/app/Storage.happ
 
 mere-memory-zome:	$(MERE_MEMORY_WASM)
 
@@ -17,7 +17,12 @@ $(STORAGE_APP):		$(STORAGE_DNA)
 	hc app pack packs/app/
 
 
-test:			$(STORAGE_DNA)
+tests/package-lock.json:	tests/package.json
+	touch $@
+tests/node_modules:		tests/package-lock.json
+	cd tests; npm install
+	touch $@
+test:			$(STORAGE_DNA) tests/node_modules
 	cd tests; npx mocha integration/test_api.js
-test-debug:		$(STORAGE_DNA)
+test-debug:		$(STORAGE_DNA) tests/node_modules
 	cd tests; LOG_LEVEL=silly npx mocha integration/test_api.js
