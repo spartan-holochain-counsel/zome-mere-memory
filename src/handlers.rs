@@ -1,9 +1,12 @@
+use std::collections::hash_map::DefaultHasher;
+use std::hash::Hasher;
 use hdk::prelude::*;
 
 use crate::{ MemoryEntry, MemoryBlockEntry, SequencePosition };
 use crate::errors::{ ErrorKinds };
 
 
+pub const TAG_MEMORY: &'static str = "memory";
 pub type AppResult<T> = Result<T, ErrorKinds>;
 
 fn now() -> AppResult<u64> {
@@ -19,6 +22,7 @@ pub fn remember_bytes(bytes: &Vec<u8>) -> AppResult<EntryHash> {
     debug!("Creating entries for remembering ({} bytes)", bytes.len() );
 
     let memory_size = bytes.len();
+    let hash = calculate_hash( &bytes );
     let chunks = bytes.chunks( BLOCK_SIZE );
     let block_count = chunks.len();
 
@@ -36,10 +40,12 @@ pub fn remember_bytes(bytes: &Vec<u8>) -> AppResult<EntryHash> {
     }
 
     create_memory_entry(CreateInput {
+	hash: hash,
 	memory_size: memory_size as u64,
 	block_addresses: blocks,
     })
 }
+
 
 pub fn retrieve_bytes(addr: EntryHash) -> AppResult<Vec<u8>> {
     let memory_info = get_memory_entry( addr )?;
@@ -54,8 +60,41 @@ pub fn retrieve_bytes(addr: EntryHash) -> AppResult<Vec<u8>> {
 }
 
 
+pub fn calculate_hash(bytes: &Vec<u8>) -> String {
+    let mut hasher = DefaultHasher::new();
+
+    hasher.write( bytes );
+
+    format!( "{:x}", hasher.finish() )
+}
+
+
+pub fn memory_exists(bytes: &Vec<u8>) -> AppResult<bool> {
+    let hash = calculate_hash( bytes );
+    let path = make_hash_path( &hash )?;
+
+    if !path.exists()? {
+	return Ok( false );
+    }
+
+    let links = get_links( path.hash()?, Some(LinkTag::new( TAG_MEMORY )) )?.into_inner();
+
+    Ok( links.len() > 0 )
+}
+
+
+pub fn make_hash_path(hash: &str) -> AppResult<Path> {
+    let path = Path::from( format!("{}", hash ) );
+
+    path.ensure()?;
+
+    Ok( path )
+}
+
+
 #[derive(Debug, Deserialize)]
 pub struct CreateInput {
+    pub hash: String,
     pub memory_size: u64,
     pub block_addresses: Vec<EntryHash>,
 }
@@ -68,12 +107,17 @@ pub fn create_memory_entry(input: CreateInput) -> AppResult<EntryHash> {
     let memory = MemoryEntry {
 	author: pubkey.clone(),
 	published_at: default_now,
+	hash: input.hash.to_owned(),
 	memory_size: input.memory_size,
 	block_addresses: input.block_addresses,
     };
     let entry_hash = hash_entry( &memory )?;
 
     create_entry( &memory )?;
+
+    let path = make_hash_path( &input.hash )?;
+
+    create_link( path.hash()?, entry_hash.to_owned(), LinkTag::new( TAG_MEMORY ) )?;
 
     Ok( entry_hash )
 }
@@ -90,14 +134,12 @@ pub fn get_memory_entry(addr: EntryHash) -> AppResult<MemoryEntry> {
 }
 
 
-
 pub fn create_memory_block_entry(block: MemoryBlockEntry) -> AppResult<EntryHash> {
     debug!("Creating 'MemoryBlockEntry' ({}/{}): {}", block.sequence.position, block.sequence.length, block.bytes.bytes().len() );
-    let entry_hash = hash_entry( &block )?;
 
     create_entry( &block )?;
 
-    Ok( entry_hash )
+    Ok( hash_entry( &block )? )
 }
 
 

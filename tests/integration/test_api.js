@@ -19,12 +19,12 @@ let clients;
 
 
 function basic_tests () {
+    const input			= Buffer.from("Somewhere over the rainbow");
     let memory_addr;
+    let memory;
 
     it("should create a memory using 'save_bytes'", async function () {
 	this.timeout( 10_000 );
-
-	const input			= Buffer.from("Somewhere over the rainbow");
 
 	let addr			= new HoloHash( await clients.alice.call( "memory", "mere_memory", "save_bytes", input ) );
 	log.normal("New memory address: %s", String(addr) );
@@ -32,11 +32,47 @@ function basic_tests () {
 	memory_addr			= addr;
     });
 
-    it("should get  a memory using 'retrieve_bytes'", async function () {
+    it("should get a memory using 'retrieve_bytes'", async function () {
 	this.timeout( 10_000 );
 
-	let memory			= await clients.alice.call( "memory", "mere_memory", "get_memory", memory_addr );
+	memory				= await clients.alice.call( "memory", "mere_memory", "get_memory", memory_addr );
 	log.normal("New memory: %s", json.debug(memory) );
+    });
+
+    it("should calculate hash of the memory bytes", async function () {
+	this.timeout( 10_000 );
+
+	{
+	    let hash			= await clients.alice.call( "memory", "mere_memory", "calculate_hash", input );
+	    log.normal("Calculated hash: %s", hash );
+
+	    expect( hash		).to.equal( memory.hash );
+	}
+
+	{
+	    let hash			= await clients.alice.call( "memory", "mere_memory", "calculate_hash", Buffer.from("hello world") );
+	    log.normal("Calculated hash: %s", hash );
+
+	    expect( hash		).to.equal("b1b1f2e707e4ac8a");
+	}
+    });
+
+    it("should find a memory based on the hash", async function () {
+	this.timeout( 10_000 );
+
+	{
+	    let exists			= await clients.alice.call( "memory", "mere_memory", "memory_exists", input );
+	    log.normal("Memory exists: %s", exists );
+
+	    expect( exists		).to.be.true;
+	}
+
+	{
+	    let exists			= await clients.alice.call( "memory", "mere_memory", "memory_exists", Buffer.from("hello world") );
+	    log.normal("Memory exists: %s", exists );
+
+	    expect( exists		).to.be.false;
+	}
     });
 }
 

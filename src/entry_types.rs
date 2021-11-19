@@ -21,6 +21,7 @@ use hdk::prelude::*;
 pub struct MemoryEntry {
     pub author: AgentPubKey,
     pub published_at: u64,
+    pub hash: String,
     pub memory_size: u64,
     pub block_addresses: Vec<EntryHash>,
 }

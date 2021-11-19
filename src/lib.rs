@@ -60,6 +60,7 @@ fn success<T>(payload: T) -> Response<T> {
 
 
 entry_defs![
+    Path::entry_def(),
     MemoryEntry::entry_def(),
     MemoryBlockEntry::entry_def()
 ];
@@ -83,6 +84,20 @@ fn retrieve_bytes(addr: EntryHash) -> ExternResult<Response<Vec<u8>>> {
     let bytes = catch!( handlers::retrieve_bytes( addr ) );
 
     Ok(success( bytes ))
+}
+
+#[hdk_extern]
+fn calculate_hash(sbytes: SerializedBytes) -> ExternResult<Response<String>> {
+    let hash = handlers::calculate_hash( sbytes.bytes() );
+
+    Ok(success( hash ))
+}
+
+#[hdk_extern]
+fn memory_exists(sbytes: SerializedBytes) -> ExternResult<Response<bool>> {
+    let answer = catch!( handlers::memory_exists( sbytes.bytes() ) );
+
+    Ok(success( answer ))
 }
 
 
