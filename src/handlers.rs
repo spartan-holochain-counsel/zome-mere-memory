@@ -33,7 +33,7 @@ pub fn remember_bytes(bytes: &Vec<u8>) -> AppResult<EntryHash> {
 		position: (i+1) as u64,
 		length: block_count as u64,
 	    },
-	    bytes: SerializedBytes::from( UnsafeBytes::from(chunk.to_owned()) ),
+	    bytes: chunk.to_owned(),
 	})?;
 
 	blocks.push( block_addr );
@@ -53,7 +53,7 @@ pub fn retrieve_bytes(addr: EntryHash) -> AppResult<Vec<u8>> {
     let mut chunks = vec![];
     for block_addr in memory_info.block_addresses.iter() {
 	let block = get_memory_block_entry( block_addr.to_owned() )?;
-	chunks.push( block.bytes.bytes().to_owned() );
+	chunks.push( block.bytes.to_owned() );
     }
 
     Ok( chunks.into_iter().flatten().collect() )
@@ -135,7 +135,7 @@ pub fn get_memory_entry(addr: EntryHash) -> AppResult<MemoryEntry> {
 
 
 pub fn create_memory_block_entry(block: MemoryBlockEntry) -> AppResult<EntryHash> {
-    debug!("Creating 'MemoryBlockEntry' ({}/{}): {}", block.sequence.position, block.sequence.length, block.bytes.bytes().len() );
+    debug!("Creating 'MemoryBlockEntry' ({}/{}): {}", block.sequence.position, block.sequence.length, block.bytes.len() );
 
     create_entry( &block )?;
 

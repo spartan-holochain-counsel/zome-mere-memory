@@ -3,6 +3,14 @@ MERE_MEMORY_WASM	= target/wasm32-unknown-unknown/release/mere_memory.wasm
 STORAGE_DNA		= packs/dna/storage.dna
 STORAGE_APP		= packs/app/Storage.happ
 
+#
+# Project
+#
+preview-crate:			test-debug
+	cargo publish --dry-run
+publish-crate:			test-debug
+	CARGO_HOME=$(HOME)/.cargo cargo publish
+
 mere-memory-zome:	$(MERE_MEMORY_WASM)
 
 $(MERE_MEMORY_WASM):	Cargo.toml src/*.rs default.nix
@@ -17,6 +25,9 @@ $(STORAGE_APP):		$(STORAGE_DNA)
 	hc app pack packs/app/
 
 
+#
+# Testing
+#
 tests/package-lock.json:	tests/package.json
 	touch $@
 tests/node_modules:		tests/package-lock.json
@@ -26,3 +37,12 @@ test:			$(STORAGE_DNA) tests/node_modules
 	cd tests; npx mocha integration/test_api.js
 test-debug:		$(STORAGE_DNA) tests/node_modules
 	cd tests; LOG_LEVEL=silly npx mocha integration/test_api.js
+
+
+#
+# Documentation
+#
+test-docs:
+	cargo test --doc
+build-docs:			test-docs
+	cargo doc

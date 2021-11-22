@@ -6,15 +6,18 @@ use hdk::prelude::*;
 /// An Entry that represents a full byte-set by grouping a set of MemoryBlockEntry
 ///
 /// Example values
-/// ```
+/// ```ignore
+/// use mere_memory::{ MemoryEntry };
+///
 /// MemoryEntry {
 ///     author: AgentPubKey::try_from("uhCAkNBaVvGRYmJUqsGNrfO8jC9Ij-t77QcmnAk3E3B8qh6TU09QN").unwrap(),
 ///     published_at: 1628013738224,
+///     hash: "bdff630d3f1c11ef".to_string(),
 ///     memory_size: 712837,
 ///     block_addresses: vec![
-///         EntryHash::try_from()
-///     ]
-/// }
+///         EntryHash::try_from("uhCEkBh2fW3K2RE41X3MOO3LdrMUYPPXWPGtuDjwRrXQZk-94N7Ku").unwrap(),
+///     ],
+/// };
 /// ```
 #[hdk_entry(id = "memory_details", visibility="public")]
 #[derive(Clone)]
@@ -30,14 +33,16 @@ pub struct MemoryEntry {
 //
 // Memory Block Entry
 //
-/// Indicates where something fits in a byte-set
+/// Indicates where a memory block fits in a byte-set
 ///
 /// Example (indicating block 1 of a 2 block set)
 /// ```
+/// use mere_memory::SequencePosition;
+///
 /// SequencePosition {
-///     pub position: 1, // Indexing is intended to start at 1, not 0
-///     pub length: 2,
-/// }
+///     position: 1, // Indexing is intended to start at 1, not 0
+///     length: 2,
+/// };
 /// ```
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct SequencePosition {
@@ -46,9 +51,22 @@ pub struct SequencePosition {
 }
 
 /// An Entry that contains 1 part of a MemoryEntry byte-set
+///
+/// Example
+/// ```
+/// use mere_memory::{ MemoryBlockEntry, SequencePosition };
+///
+/// MemoryBlockEntry {
+///     sequence: SequencePosition {
+///         position: 1, // Indexing is intended to start at 1, not 0
+///         length: 2,
+///     },
+///     bytes: vec![ 34, 129, 87, 2 ],
+/// };
+/// ```
 #[hdk_entry(id = "memory_block", visibility="public")]
 #[derive(Clone)]
 pub struct MemoryBlockEntry {
     pub sequence: SequencePosition,
-    pub bytes: SerializedBytes,
+    pub bytes: Vec<u8>,
 }
