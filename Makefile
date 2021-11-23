@@ -7,13 +7,13 @@ STORAGE_APP		= packs/app/Storage.happ
 # Project
 #
 preview-crate:			test-debug
-	cargo publish --dry-run
+	cd mere_memory_types; cargo publish --dry-run
 publish-crate:			test-debug
-	CARGO_HOME=$(HOME)/.cargo cargo publish
+	cd mere_memory_types; CARGO_HOME=$(HOME)/.cargo cargo publish
 
 mere-memory-zome:	$(MERE_MEMORY_WASM)
 
-$(MERE_MEMORY_WASM):	Cargo.toml src/*.rs default.nix
+$(MERE_MEMORY_WASM):	Cargo.toml src/*.rs mere_memory_types/Cargo.toml mere_memory_types/src/*.rs default.nix
 	@echo "Building zome: $@"; \
 	RUST_BACKTRACE=1 CARGO_TARGET_DIR=target cargo build \
 		--release --target wasm32-unknown-unknown
@@ -43,6 +43,6 @@ test-debug:		$(STORAGE_DNA) tests/node_modules
 # Documentation
 #
 test-docs:
-	cargo test --doc
+	cd mere_memory_types; cargo test --doc
 build-docs:			test-docs
-	cargo doc
+	cd mere_memory_types; cargo doc

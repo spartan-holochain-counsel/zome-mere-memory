@@ -1,11 +1,10 @@
 use essence::{ EssenceResponse };
 use hdk::prelude::*;
 
-mod entry_types;
 mod errors;
 mod handlers;
 
-pub use entry_types::{ MemoryEntry, MemoryBlockEntry, SequencePosition };
+pub use mere_memory_types::{ MemoryEntry, MemoryBlockEntry, SequencePosition };
 
 type Response<T> = EssenceResponse<T, (), ()>;
 
@@ -43,7 +42,7 @@ fn retrieve_bytes(addr: EntryHash) -> ExternResult<Response<Vec<u8>>> {
 
 #[hdk_extern]
 fn calculate_hash(sbytes: SerializedBytes) -> ExternResult<Response<String>> {
-    let hash = handlers::calculate_hash( sbytes.bytes() );
+    let hash = mere_memory_types::calculate_hash( &sbytes.bytes() );
 
     Ok(success( hash ))
 }

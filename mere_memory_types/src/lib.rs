@@ -1,4 +1,17 @@
+use std::collections::hash_map::DefaultHasher;
+use std::hash::Hasher;
 use hdk::prelude::*;
+
+
+/// Get the hash of the given bytes as a hex string
+pub fn calculate_hash(bytes: &Vec<u8>) -> String {
+    let mut hasher = DefaultHasher::new();
+
+    hasher.write( bytes );
+
+    format!( "{:x}", hasher.finish() )
+}
+
 
 //
 // Memory Entry
@@ -7,7 +20,7 @@ use hdk::prelude::*;
 ///
 /// Example values
 /// ```ignore
-/// use mere_memory::{ MemoryEntry };
+/// use mere_memory_types::{ MemoryEntry };
 ///
 /// MemoryEntry {
 ///     author: AgentPubKey::try_from("uhCAkNBaVvGRYmJUqsGNrfO8jC9Ij-t77QcmnAk3E3B8qh6TU09QN").unwrap(),
@@ -37,7 +50,7 @@ pub struct MemoryEntry {
 ///
 /// Example (indicating block 1 of a 2 block set)
 /// ```
-/// use mere_memory::SequencePosition;
+/// use mere_memory_types::SequencePosition;
 ///
 /// SequencePosition {
 ///     position: 1, // Indexing is intended to start at 1, not 0
@@ -54,7 +67,7 @@ pub struct SequencePosition {
 ///
 /// Example
 /// ```
-/// use mere_memory::{ MemoryBlockEntry, SequencePosition };
+/// use mere_memory_types::{ MemoryBlockEntry, SequencePosition };
 ///
 /// MemoryBlockEntry {
 ///     sequence: SequencePosition {

@@ -1,5 +1,3 @@
-use std::collections::hash_map::DefaultHasher;
-use std::hash::Hasher;
 use hdk::prelude::*;
 
 use crate::{ MemoryEntry, MemoryBlockEntry, SequencePosition };
@@ -22,7 +20,7 @@ pub fn remember_bytes(bytes: &Vec<u8>) -> AppResult<EntryHash> {
     debug!("Creating entries for remembering ({} bytes)", bytes.len() );
 
     let memory_size = bytes.len();
-    let hash = calculate_hash( &bytes );
+    let hash = mere_memory_types::calculate_hash( &bytes );
     let chunks = bytes.chunks( BLOCK_SIZE );
     let block_count = chunks.len();
 
@@ -60,17 +58,8 @@ pub fn retrieve_bytes(addr: EntryHash) -> AppResult<Vec<u8>> {
 }
 
 
-pub fn calculate_hash(bytes: &Vec<u8>) -> String {
-    let mut hasher = DefaultHasher::new();
-
-    hasher.write( bytes );
-
-    format!( "{:x}", hasher.finish() )
-}
-
-
 pub fn memory_exists(bytes: &Vec<u8>) -> AppResult<bool> {
-    let hash = calculate_hash( bytes );
+    let hash = mere_memory_types::calculate_hash( bytes );
     let path = make_hash_path( &hash )?;
 
     if !path.exists()? {

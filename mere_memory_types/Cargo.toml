@@ -1,6 +1,6 @@
 [package]
-name = "hc_zome_mere_memory"
-version = "0.0.0"
+name = "mere_memory_types"
+version = "0.9.1"
 authors = ["Matthew Brisebois <matthew.brisebois@holo.host>"]
 edition = "2018"
 license = "CAL-1.0"
@@ -9,15 +9,8 @@ description = "A Holochain Zome for storing large or small byte values"
 readme = "README.md"
 
 [lib]
-name = "mere_memory"
-crate-type = ["cdylib", "rlib"]
+name = "mere_memory_types"
 
 [dependencies]
-essence_payloads = "0.1"
-mere_memory_types = {path = "./mere_memory_types"}
 hdk = "0.0.109"
 serde = "1"
-thiserror = "1"
-
-[dev-dependencies]
-rand = "0.8.3"
