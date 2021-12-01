@@ -46,14 +46,14 @@ function basic_tests () {
 	    let hash			= await clients.alice.call( "memory", "mere_memory", "calculate_hash", input );
 	    log.normal("Calculated hash: %s", hash );
 
-	    expect( hash		).to.equal( memory.hash );
+	    expect( hash		).to.deep.equal( memory.hash );
 	}
 
 	{
 	    let hash			= await clients.alice.call( "memory", "mere_memory", "calculate_hash", Buffer.from("hello world") );
 	    log.normal("Calculated hash: %s", hash );
 
-	    expect( hash		).to.equal("b1b1f2e707e4ac8a");
+	    expect( hash		).to.equal("b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9");
 	}
     });
 

@@ -1,15 +1,20 @@
-use std::collections::hash_map::DefaultHasher;
-use std::hash::Hasher;
+//! Other Resources
+//!
+//! - Source code - [github.com/mjbrisebois/hc-zome-mere-memory](https://github.com/mjbrisebois/hc-zome-mere-memory)
+//! - Cargo package - [crates.io/crates/mere_memory_types](https://crates.io/crates/mere_memory_types)
+//!
+
+use sha2::{ Sha256, Digest };
 use hdk::prelude::*;
 
 
 /// Get the hash of the given bytes as a hex string
-pub fn calculate_hash(bytes: &Vec<u8>) -> String {
-    let mut hasher = DefaultHasher::new();
+pub fn calculate_hash(bytes: &Vec<u8>) -> [u8; 32] {
+    let mut hasher = Sha256::new();
 
-    hasher.write( bytes );
+    hasher.update( bytes );
 
-    format!( "{:x}", hasher.finish() )
+    hasher.finalize().into()
 }
 
 

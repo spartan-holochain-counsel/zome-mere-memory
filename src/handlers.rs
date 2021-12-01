@@ -1,4 +1,5 @@
 use hdk::prelude::*;
+use hex;
 
 use crate::{ MemoryEntry, MemoryBlockEntry, SequencePosition };
 use crate::errors::{ ErrorKinds };
@@ -72,8 +73,8 @@ pub fn memory_exists(bytes: &Vec<u8>) -> AppResult<bool> {
 }
 
 
-pub fn make_hash_path(hash: &str) -> AppResult<Path> {
-    let path = Path::from( format!("{}", hash ) );
+pub fn make_hash_path(hash: &[u8; 32]) -> AppResult<Path> {
+    let path = Path::from( hex::encode( hash ) );
 
     path.ensure()?;
 
@@ -83,7 +84,7 @@ pub fn make_hash_path(hash: &str) -> AppResult<Path> {
 
 #[derive(Debug, Deserialize)]
 pub struct CreateInput {
-    pub hash: String,
+    pub hash: [u8; 32],
     pub memory_size: u64,
     pub block_addresses: Vec<EntryHash>,
 }
@@ -96,7 +97,7 @@ pub fn create_memory_entry(input: CreateInput) -> AppResult<EntryHash> {
     let memory = MemoryEntry {
 	author: pubkey.clone(),
 	published_at: default_now,
-	hash: input.hash.to_owned(),
+	hash: hex::encode( input.hash ),
 	memory_size: input.memory_size,
 	block_addresses: input.block_addresses,
     };
