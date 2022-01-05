@@ -19,10 +19,25 @@ $(MERE_MEMORY_WASM):	Cargo.toml src/*.rs mere_memory_types/Cargo.toml mere_memor
 		--release --target wasm32-unknown-unknown
 	@touch $@ # Cargo must have a cache somewhere because it doesn't update the file time
 
-$(STORAGE_DNA):		$(MERE_MEMORY_WASM)
+$(STORAGE_DNA):		$(MERE_MEMORY_WASM) Cargo.toml mere_memory_types/Cargo.toml mere_memory_types/src/*.rs
 	hc dna pack packs/dna/
 $(STORAGE_APP):		$(STORAGE_DNA)
 	hc app pack packs/app/
+use-local-holochain-backdrop:
+	cd tests; npm uninstall @whi/holochain-backdrop
+	cd tests; npm install --save-dev ../../node-holochain-backdrop
+use-npm-holochain-backdrop:
+	cd tests; npm uninstall @whi/holochain-backdrop
+	cd tests; npm install --save-dev @whi/holochain-backdrop
+use-local-holochain-client:
+	cd tests; npm uninstall @whi/holochain-client
+	cd tests; npm install --save-dev ../../js-holochain-client
+use-npm-holochain-client:
+	cd tests; npm uninstall @whi/holochain-client
+	cd tests; npm install --save-dev @whi/holochain-client
+
+use-local:		use-local-holochain-client use-local-holochain-backdrop
+use-npm:		  use-npm-holochain-client   use-npm-holochain-backdrop
 
 
 #

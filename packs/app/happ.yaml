@@ -1,7 +1,7 @@
 manifest_version: "1"
 name: Storage
 description: Simple byte storage
-slots:
+roles:
   - id: storage
     provisioning:
       strategy: create

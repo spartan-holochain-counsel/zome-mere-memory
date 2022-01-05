@@ -67,7 +67,7 @@ pub fn memory_exists(bytes: &Vec<u8>) -> AppResult<bool> {
 	return Ok( false );
     }
 
-    let links = get_links( path.hash()?, Some(LinkTag::new( TAG_MEMORY )) )?.into_inner();
+    let links = get_links( path.hash()?, Some(LinkTag::new( TAG_MEMORY )) )?;
 
     Ok( links.len() > 0 )
 }
