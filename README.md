@@ -8,6 +8,10 @@ This package is intended to be built as WASM and used as a Zome in Holochain DNA
 [![](https://img.shields.io/github/issues-pr-raw/mjbrisebois/hc-zome-mere-memory?style=flat-square)](https://github.com/mjbrisebois/hc-zome-mere-memory/pulls)
 
 
+### Mere Memory Types Crate
+See [mere_memory_types/README.md](mere_memory_types/README.md)
+
+
 ### Holochain Version Map
 For information on which versions of this package work for each Holochain release, see
 [docs/Holochain_Version_Map.md](docs/Holochain_Version_Map.md)
