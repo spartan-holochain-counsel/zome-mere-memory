@@ -67,7 +67,7 @@ pub fn memory_exists(bytes: &Vec<u8>) -> AppResult<bool> {
 	return Ok( false );
     }
 
-    let links = get_links( path.hash()?, Some(LinkTag::new( TAG_MEMORY )) )?;
+    let links = get_links( path.path_entry_hash()?, Some(LinkTag::new( TAG_MEMORY )) )?;
 
     Ok( links.len() > 0 )
 }
@@ -107,7 +107,7 @@ pub fn create_memory_entry(input: CreateInput) -> AppResult<EntryHash> {
 
     let path = make_hash_path( &input.hash )?;
 
-    create_link( path.hash()?, entry_hash.to_owned(), LinkTag::new( TAG_MEMORY ) )?;
+    create_link( path.path_entry_hash()?, entry_hash.to_owned(), LinkTag::new( TAG_MEMORY ) )?;
 
     Ok( entry_hash )
 }

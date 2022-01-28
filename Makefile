@@ -2,6 +2,7 @@
 MERE_MEMORY_WASM	= target/wasm32-unknown-unknown/release/mere_memory.wasm
 STORAGE_DNA		= packs/dna/storage.dna
 STORAGE_APP		= packs/app/Storage.happ
+STORAGE_APP_CLONABLE	= packs/app_clonable/Storage.happ
 
 #
 # Project
@@ -19,10 +20,12 @@ $(MERE_MEMORY_WASM):	Cargo.toml src/*.rs mere_memory_types/Cargo.toml mere_memor
 		--release --target wasm32-unknown-unknown
 	@touch $@ # Cargo must have a cache somewhere because it doesn't update the file time
 
-$(STORAGE_DNA):		$(MERE_MEMORY_WASM) Cargo.toml mere_memory_types/Cargo.toml mere_memory_types/src/*.rs
+$(STORAGE_DNA):			$(MERE_MEMORY_WASM) packs/dna/dna.yaml Cargo.toml mere_memory_types/Cargo.toml mere_memory_types/src/*.rs
 	hc dna pack packs/dna/
-$(STORAGE_APP):		$(STORAGE_DNA)
+$(STORAGE_APP):			$(STORAGE_DNA) packs/app/happ.yaml
 	hc app pack packs/app/
+$(STORAGE_APP_CLONABLE):	$(STORAGE_DNA) packs/app_clonable/happ.yaml
+	hc app pack packs/app_clonable/
 use-local-holochain-backdrop:
 	cd tests; npm uninstall @whi/holochain-backdrop
 	cd tests; npm install --save-dev ../../node-holochain-backdrop

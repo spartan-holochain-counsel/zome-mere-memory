@@ -15,7 +15,7 @@ fn success<T>(payload: T) -> Response<T> {
 
 
 entry_defs![
-    Path::entry_def(),
+    PathEntry::entry_def(),
     MemoryEntry::entry_def(),
     MemoryBlockEntry::entry_def()
 ];
