@@ -5,6 +5,7 @@ use crate::{ MemoryEntry, MemoryBlockEntry, SequencePosition };
 use crate::errors::{ ErrorKinds };
 
 
+pub const LT_HASH : LinkType = LinkType(1);
 pub const TAG_MEMORY: &'static str = "memory";
 pub type AppResult<T> = Result<T, ErrorKinds>;
 
@@ -107,7 +108,7 @@ pub fn create_memory_entry(input: CreateInput) -> AppResult<EntryHash> {
 
     let path = make_hash_path( &input.hash )?;
 
-    create_link( path.path_entry_hash()?, entry_hash.to_owned(), LinkTag::new( TAG_MEMORY ) )?;
+    create_link( path.path_entry_hash()?, entry_hash.to_owned(), LT_HASH, LinkTag::new( TAG_MEMORY ) )?;
 
     Ok( entry_hash )
 }
