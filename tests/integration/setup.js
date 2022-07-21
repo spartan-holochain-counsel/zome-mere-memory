@@ -4,14 +4,18 @@ const log				= require('@whi/stdlog')(path.basename( __filename ), {
 });
 
 global.WebSocket			= require('ws');
-const { Client, logging }		= require('@holochain/devhub-entities');
+const { AgentClient,
+	...hc_client }			= require('@whi/holochain-client');
+const { CruxConfig }			= require('@whi/crux-payload-parser');
+
+const crux_config			= new CruxConfig( {}, [] );
 
 if ( process.env.LOG_LEVEL )
-    logging();
+    hc_client.logging();
 
 const all_clients			= [];
 function exit_cleanup () {
-    all_clients.forEach( client => client.destroy() );
+    all_clients.forEach( client => client.close() );
 }
 process.once("exit", exit_cleanup );
 
@@ -56,8 +60,10 @@ async function backdrop ( holochain, dnas, actors, client_options ) {
 	    log.info("Established a new cell for '%s': %s => [ %s :: %s ]", actor, nick, String(cell.dna.hash), String(happ.agent) );
 	}) );
 
-	const client			= new Client( happ.agent, dna_map, app_port, client_options );
+	const client			= new AgentClient( happ.agent, dna_map, app_port, client_options );
+	crux_config.upgrade( client );
 	clients[actor]			= client
+
 
 	all_clients.push( client );
     }) );
