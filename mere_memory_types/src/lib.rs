@@ -5,7 +5,7 @@
 //!
 
 use sha2::{ Sha256, Digest };
-use hdk::prelude::*;
+use hdi::prelude::*;
 
 
 /// Get the hash of the given bytes as a hex string
@@ -37,7 +37,7 @@ pub fn calculate_hash(bytes: &Vec<u8>) -> [u8; 32] {
 ///     ],
 /// };
 /// ```
-#[hdk_entry(id = "memory_details", visibility="public")]
+#[hdk_entry_helper]
 #[derive(Clone)]
 pub struct MemoryEntry {
     pub author: AgentPubKey,
@@ -45,6 +45,12 @@ pub struct MemoryEntry {
     pub hash: String,
     pub memory_size: u64,
     pub block_addresses: Vec<EntryHash>,
+}
+
+impl MemoryEntry {
+    pub fn to_input(&self) -> EntryTypes {
+	EntryTypes::Memory(self.clone())
+    }
 }
 
 
@@ -82,9 +88,31 @@ pub struct SequencePosition {
 ///     bytes: vec![ 34, 129, 87, 2 ],
 /// };
 /// ```
-#[hdk_entry(id = "memory_block", visibility="public")]
+#[hdk_entry_helper]
 #[derive(Clone)]
 pub struct MemoryBlockEntry {
     pub sequence: SequencePosition,
     pub bytes: Vec<u8>,
+}
+
+impl MemoryBlockEntry {
+    pub fn to_input(&self) -> EntryTypes {
+	EntryTypes::MemoryBlock(self.clone())
+    }
+}
+
+
+#[hdk_entry_defs]
+#[unit_enum(UnitEntryTypes)]
+pub enum EntryTypes {
+    #[entry_def(required_validations = 5)]
+    Memory(MemoryEntry),
+    #[entry_def(required_validations = 5)]
+    MemoryBlock(MemoryBlockEntry),
+}
+
+
+#[hdk_link_types]
+pub enum LinkTypes {
+    ByHash,
 }

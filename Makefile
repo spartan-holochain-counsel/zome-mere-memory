@@ -1,5 +1,6 @@
 
 MERE_MEMORY_WASM	= target/wasm32-unknown-unknown/release/mere_memory.wasm
+CORE_WASM		= target/wasm32-unknown-unknown/release/mere_memory_types.wasm
 STORAGE_DNA		= packs/dna/storage.dna
 STORAGE_APP		= packs/app/Storage.happ
 STORAGE_APP_CLONABLE	= packs/app_clonable/Storage.happ
@@ -20,7 +21,12 @@ $(MERE_MEMORY_WASM):	Cargo.toml src/*.rs mere_memory_types/Cargo.toml mere_memor
 		--release --target wasm32-unknown-unknown
 	@touch $@ # Cargo must have a cache somewhere because it doesn't update the file time
 
-$(STORAGE_DNA):			$(MERE_MEMORY_WASM) packs/dna/dna.yaml Cargo.toml mere_memory_types/Cargo.toml mere_memory_types/src/*.rs
+$(CORE_WASM):		mere_memory_types/Cargo.toml mere_memory_types/src/*.rs default.nix
+	@echo "Building zome: $@"; \
+	cd mere_memory_types; RUST_BACKTRACE=1 CARGO_TARGET_DIR=../target cargo build \
+		--release --target wasm32-unknown-unknown
+
+$(STORAGE_DNA):			$(CORE_WASM) $(MERE_MEMORY_WASM) packs/dna/dna.yaml Cargo.toml mere_memory_types/Cargo.toml mere_memory_types/src/*.rs
 	hc dna pack packs/dna/
 $(STORAGE_APP):			$(STORAGE_DNA) packs/app/happ.yaml
 	hc app pack packs/app/

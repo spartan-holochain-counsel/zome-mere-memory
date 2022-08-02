@@ -5,7 +5,10 @@ use hex;
 mod errors;
 mod handlers;
 
-pub use mere_memory_types::{ MemoryEntry, MemoryBlockEntry, SequencePosition };
+pub use mere_memory_types::{
+    MemoryEntry, MemoryBlockEntry, SequencePosition,
+    EntryTypes, LinkTypes,
+};
 
 type Response<T> = EssenceResponse<T, (), ()>;
 
@@ -13,12 +16,6 @@ fn success<T>(payload: T) -> Response<T> {
     Response::success( payload, None )
 }
 
-
-entry_defs![
-    PathEntry::entry_def(),
-    MemoryEntry::entry_def(),
-    MemoryBlockEntry::entry_def()
-];
 
 
 #[hdk_extern]

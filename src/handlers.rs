@@ -1,11 +1,14 @@
 use hdk::prelude::*;
 use hex;
 
-use crate::{ MemoryEntry, MemoryBlockEntry, SequencePosition };
+
+use crate::{
+    MemoryEntry, MemoryBlockEntry, SequencePosition,
+    LinkTypes,
+};
 use crate::errors::{ ErrorKinds };
 
 
-pub const LT_HASH : LinkType = LinkType(1);
 pub const TAG_MEMORY: &'static str = "memory";
 pub type AppResult<T> = Result<T, ErrorKinds>;
 
@@ -64,11 +67,7 @@ pub fn memory_exists(bytes: &Vec<u8>) -> AppResult<bool> {
     let hash = mere_memory_types::calculate_hash( bytes );
     let path = make_hash_path( &hash )?;
 
-    if !path.exists()? {
-	return Ok( false );
-    }
-
-    let links = get_links( path.path_entry_hash()?, Some(LinkTag::new( TAG_MEMORY )) )?;
+    let links = get_links( path.path_entry_hash()?, LinkTypes::ByHash, Some(LinkTag::new( TAG_MEMORY )) )?;
 
     Ok( links.len() > 0 )
 }
@@ -76,8 +75,6 @@ pub fn memory_exists(bytes: &Vec<u8>) -> AppResult<bool> {
 
 pub fn make_hash_path(hash: &[u8; 32]) -> AppResult<Path> {
     let path = Path::from( hex::encode( hash ) );
-
-    path.ensure()?;
 
     Ok( path )
 }
@@ -104,11 +101,11 @@ pub fn create_memory_entry(input: CreateInput) -> AppResult<EntryHash> {
     };
     let entry_hash = hash_entry( &memory )?;
 
-    create_entry( &memory )?;
+    create_entry( memory.to_input() )?;
 
     let path = make_hash_path( &input.hash )?;
 
-    create_link( path.path_entry_hash()?, entry_hash.to_owned(), LT_HASH, LinkTag::new( TAG_MEMORY ) )?;
+    create_link( path.path_entry_hash()?, entry_hash.to_owned(), LinkTypes::ByHash, LinkTag::new( TAG_MEMORY ) )?;
 
     Ok( entry_hash )
 }
@@ -128,7 +125,7 @@ pub fn get_memory_entry(addr: EntryHash) -> AppResult<MemoryEntry> {
 pub fn create_memory_block_entry(block: MemoryBlockEntry) -> AppResult<EntryHash> {
     debug!("Creating 'MemoryBlockEntry' ({}/{}): {}", block.sequence.position, block.sequence.length, block.bytes.len() );
 
-    create_entry( &block )?;
+    create_entry( block.to_input() )?;
 
     Ok( hash_entry( &block )? )
 }
