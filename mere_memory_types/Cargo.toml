@@ -1,6 +1,6 @@
 [package]
 name = "mere_memory_types"
-version = "0.42.0"
+version = "0.42.1"
 authors = ["Matthew Brisebois <matthew.brisebois@holo.host>"]
 edition = "2018"
 license = "CAL-1.0"

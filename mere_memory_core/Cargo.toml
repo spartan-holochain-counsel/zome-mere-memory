@@ -1,5 +1,5 @@
 [package]
-name = "hc_zome_mere_memory"
+name = "mere_memory_core"
 version = "0.0.0"
 authors = ["Matthew Brisebois <matthew.brisebois@holo.host>"]
 edition = "2018"
@@ -9,17 +9,11 @@ description = ""
 readme = "README.md"
 
 [lib]
-name = "mere_memory"
+name = "mere_memory_core"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-essence_payloads = "0.1"
-mere_memory_core = {path = "./mere_memory_core"}
-mere_memory_types = {path = "./mere_memory_types"}
-hdk = "0.0.142"
-hex = "0"
+hdi = "0.0.14"
+mere_memory_types = {path = "../mere_memory_types"}
 serde = "1"
-thiserror = "1"
-
-[dev-dependencies]
-rand = "0.8.3"
+sha2 = "0"

@@ -6,7 +6,10 @@ mod errors;
 mod handlers;
 
 pub use mere_memory_types::{
-    MemoryEntry, MemoryBlockEntry, SequencePosition,
+    MemoryEntry,
+    MemoryBlockEntry,
+};
+pub use mere_memory_core::{
     EntryTypes, LinkTypes,
 };
 

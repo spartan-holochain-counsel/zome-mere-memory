@@ -795,8 +795,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "mere_memory_core"
+version = "0.0.0"
+dependencies = [
+ "hdi",
+ "mere_memory_types",
+ "serde",
+ "sha2",
+]
+
+[[package]]
 name = "mere_memory_types"
-version = "0.42.0"
+version = "0.42.1"
 dependencies = [
  "hdi",
  "serde",

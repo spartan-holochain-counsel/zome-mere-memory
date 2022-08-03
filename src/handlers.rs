@@ -2,8 +2,15 @@ use hdk::prelude::*;
 use hex;
 
 
+pub use mere_memory_types::{
+    MemoryEntry,
+    MemoryBlockEntry,
+    SequencePosition,
+};
+pub use mere_memory_core::{
+    ToInput,
+};
 use crate::{
-    MemoryEntry, MemoryBlockEntry, SequencePosition,
     LinkTypes,
 };
 use crate::errors::{ ErrorKinds };

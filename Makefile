@@ -21,9 +21,9 @@ $(MERE_MEMORY_WASM):	Cargo.toml src/*.rs mere_memory_types/Cargo.toml mere_memor
 		--release --target wasm32-unknown-unknown
 	@touch $@ # Cargo must have a cache somewhere because it doesn't update the file time
 
-$(CORE_WASM):		mere_memory_types/Cargo.toml mere_memory_types/src/*.rs default.nix
+$(CORE_WASM):		mere_memory_core/Cargo.toml mere_memory_core/src/*.rs default.nix  mere_memory_types/Cargo.toml mere_memory_types/src/*.rs
 	@echo "Building zome: $@"; \
-	cd mere_memory_types; RUST_BACKTRACE=1 CARGO_TARGET_DIR=../target cargo build \
+	cd mere_memory_core; RUST_BACKTRACE=1 CARGO_TARGET_DIR=../target cargo build \
 		--release --target wasm32-unknown-unknown
 
 $(STORAGE_DNA):			$(CORE_WASM) $(MERE_MEMORY_WASM) packs/dna/dna.yaml Cargo.toml mere_memory_types/Cargo.toml mere_memory_types/src/*.rs

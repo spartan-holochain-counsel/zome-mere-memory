@@ -4,8 +4,8 @@
 //! - Cargo package - [crates.io/crates/mere_memory_types](https://crates.io/crates/mere_memory_types)
 //!
 
-use sha2::{ Sha256, Digest };
 use hdi::prelude::*;
+use sha2::{ Sha256, Digest };
 
 
 /// Get the hash of the given bytes as a hex string
@@ -45,12 +45,6 @@ pub struct MemoryEntry {
     pub hash: String,
     pub memory_size: u64,
     pub block_addresses: Vec<EntryHash>,
-}
-
-impl MemoryEntry {
-    pub fn to_input(&self) -> EntryTypes {
-	EntryTypes::Memory(self.clone())
-    }
 }
 
 
@@ -93,26 +87,4 @@ pub struct SequencePosition {
 pub struct MemoryBlockEntry {
     pub sequence: SequencePosition,
     pub bytes: Vec<u8>,
-}
-
-impl MemoryBlockEntry {
-    pub fn to_input(&self) -> EntryTypes {
-	EntryTypes::MemoryBlock(self.clone())
-    }
-}
-
-
-#[hdk_entry_defs]
-#[unit_enum(UnitEntryTypes)]
-pub enum EntryTypes {
-    #[entry_def(required_validations = 5)]
-    Memory(MemoryEntry),
-    #[entry_def(required_validations = 5)]
-    MemoryBlock(MemoryBlockEntry),
-}
-
-
-#[hdk_link_types]
-pub enum LinkTypes {
-    ByHash,
 }
