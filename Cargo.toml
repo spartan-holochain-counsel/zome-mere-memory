@@ -17,7 +17,7 @@ essence_payloads = "0.1"
 mere_memory_core = {path = "./mere_memory_core"}
 mere_memory_types = {path = "./mere_memory_types"}
 hdk = "0.0.151"
-hex = "0"
+hex = "0.4"
 serde = "1"
 thiserror = "1"
 
