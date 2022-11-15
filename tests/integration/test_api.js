@@ -19,7 +19,7 @@ let clients;
 
 
 function basic_tests () {
-    const input			= Buffer.from("Somewhere over the rainbow");
+    const input				= (new Uint8Array(3_000_000)).fill(1);
     let memory_addr;
     let memory;
 

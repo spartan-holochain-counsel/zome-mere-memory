@@ -26,7 +26,7 @@ fn now() -> AppResult<u64> {
 }
 
 
-const BLOCK_SIZE : usize = 4_194_304; // 4MB
+const BLOCK_SIZE : usize = 2_097_152; // 2MB
 
 pub fn remember_bytes(bytes: &Vec<u8>) -> AppResult<EntryHash> {
     debug!("Creating entries for remembering ({} bytes)", bytes.len() );
@@ -37,7 +37,7 @@ pub fn remember_bytes(bytes: &Vec<u8>) -> AppResult<EntryHash> {
     let block_count = chunks.len();
 
     let mut blocks : Vec<EntryHash> = vec![];
-    for (i, chunk) in chunks.enumerate() { // 1mb block size
+    for (i, chunk) in chunks.enumerate() {
 	let block_addr = create_memory_block_entry(MemoryBlockEntry{
 	    sequence: SequencePosition {
 		position: (i+1) as u64,
