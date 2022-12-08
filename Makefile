@@ -70,3 +70,16 @@ test-docs:
 	cd mere_memory_types; cargo test --doc
 build-docs:			test-docs
 	cd mere_memory_types; cargo doc
+
+PRE_HDK_VERSION = "0.0.160"
+NEW_HDK_VERSION = "0.0.163"
+
+PRE_HDI_VERSION = "0.1.8"
+NEW_HDI_VERSION = "0.1.10"
+
+GG_REPLACE_LOCATIONS = ':(exclude)*.lock' Cargo.toml mere_memory_types/ mere_memory_core/
+
+update-hdk-version:
+	git grep -l $(PRE_HDK_VERSION) -- $(GG_REPLACE_LOCATIONS) | xargs sed -i 's/$(PRE_HDK_VERSION)/$(NEW_HDK_VERSION)/g'
+update-hdi-version:
+	git grep -l $(PRE_HDI_VERSION) -- $(GG_REPLACE_LOCATIONS) | xargs sed -i 's/$(PRE_HDI_VERSION)/$(NEW_HDI_VERSION)/g'
