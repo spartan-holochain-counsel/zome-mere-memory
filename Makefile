@@ -57,9 +57,9 @@ tests/package-lock.json:	tests/package.json
 tests/node_modules:		tests/package-lock.json
 	cd tests; npm install
 	touch $@
-test:			$(STORAGE_DNA) tests/node_modules
+test:			$(STORAGE_APP) tests/node_modules
 	cd tests; npx mocha integration/test_api.js
-test-debug:		$(STORAGE_DNA) tests/node_modules
+test-debug:		$(STORAGE_APP) tests/node_modules
 	cd tests; LOG_LEVEL=silly npx mocha integration/test_api.js
 
 
@@ -71,15 +71,15 @@ test-docs:
 build-docs:			test-docs
 	cd mere_memory_types; cargo doc
 
-PRE_HDK_VERSION = "0.0.160"
-NEW_HDK_VERSION = "0.0.163"
+PRE_HDK_VERSION = { git = "https://github.com/holochain/holochain", rev = "c6bb672d624a884c57ffe588607ffc06aa2f7c74" }
+NEW_HDK_VERSION = "0.1.0-beta-rc.0"
 
-PRE_HDI_VERSION = "0.1.8"
-NEW_HDI_VERSION = "0.1.10"
+PRE_HDI_VERSION = { git = "https://github.com/holochain/holochain", rev = "c6bb672d624a884c57ffe588607ffc06aa2f7c74" }
+NEW_HDI_VERSION = "0.2.0-beta-rc.0"
 
 GG_REPLACE_LOCATIONS = ':(exclude)*.lock' Cargo.toml mere_memory_types/ mere_memory_core/
 
 update-hdk-version:
-	git grep -l $(PRE_HDK_VERSION) -- $(GG_REPLACE_LOCATIONS) | xargs sed -i 's/$(PRE_HDK_VERSION)/$(NEW_HDK_VERSION)/g'
+	git grep -l '$(PRE_HDK_VERSION)' -- $(GG_REPLACE_LOCATIONS) | xargs sed -i 's|$(PRE_HDK_VERSION)|$(NEW_HDK_VERSION)|g'
 update-hdi-version:
-	git grep -l $(PRE_HDI_VERSION) -- $(GG_REPLACE_LOCATIONS) | xargs sed -i 's/$(PRE_HDI_VERSION)/$(NEW_HDI_VERSION)/g'
+	git grep -l '$(PRE_HDI_VERSION)' -- $(GG_REPLACE_LOCATIONS) | xargs sed -i 's|$(PRE_HDI_VERSION)|$(NEW_HDI_VERSION)|g'

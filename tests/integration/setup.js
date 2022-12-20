@@ -56,14 +56,13 @@ async function backdrop ( holochain, dnas, actors, client_options ) {
     await Promise.all( Object.entries( agents ).map( async ([ actor, happ ]) => {
 	const dna_map			= {};
 	await Promise.all( Object.entries( happ.cells ).map( async ([ nick, cell ]) => {
-	    dna_map[nick]		= cell.dna.hash;
+	    dna_map[nick]		= cell.dna;
 	    log.info("Established a new cell for '%s': %s => [ %s :: %s ]", actor, nick, String(cell.dna.hash), String(happ.agent) );
 	}) );
 
 	const client			= new AgentClient( happ.agent, dna_map, app_port, client_options );
 	crux_config.upgrade( client );
 	clients[actor]			= client
-
 
 	all_clients.push( client );
     }) );
