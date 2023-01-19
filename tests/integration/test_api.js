@@ -87,17 +87,7 @@ describe("Zome: Mere Memory", () => {
 	this.timeout( 30_000 );
 
 	clients				= await backdrop( holochain, {
-	    "memory": {
-		"path": MEMORY_PATH,
-		"zomes": {
-		    "mere_memory": [
-			"save_bytes",
-			"get_memory",
-			"calculate_hash",
-			"memory_exists",
-		    ],
-		},
-	    },
+	    "memory": MEMORY_PATH,
 	}, [
 	    "alice",
 	], {
