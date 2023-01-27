@@ -50,7 +50,6 @@ The Mere Memory minor version is bumped whenever the HDK version changes.
 | `v0.0.161` to `v0.0.162` skipped                                                                           |                |                                                                                             |                                                                              |
 | [`v0.0.163`](https://github.com/holochain/holochain/tree/64286bf7aa10e9e93032361a69843daa354fdb1b)         | *Nov 30, 2022* | [`v0.2.2`](https://github.com/holochain/lair/tree/004d15c05f51bb625cb5c8db6e71f4a58ff4d3fe) | [`v0.75.0`](https://github.com/mjbrisebois/hc-zome-mere-memory/tree/v0.75.0) |
 | [`v0.1.0-beta-rc.0`](https://github.com/holochain/holochain/tree/eb1e637c353190bfdba8b742c6b8bbb1b3f4a669) | *Dec 16, 2022* | [`v0.2.3`](https://github.com/holochain/lair/tree/cbfbefefe43073904a914c8181a450209a74167b) | [`v0.76.0`](https://github.com/mjbrisebois/hc-zome-mere-memory/tree/v0.76.0) |
-| [`v0.1.0-beta-rc.3`](https://github.com/holochain/holochain/tree/60c042dbc8cc11aef091931c2758bb3e0d816662) | *Jan 17, 2023* | [`v0.2.3`](https://github.com/holochain/lair/tree/cbfbefefe43073904a914c8181a450209a74167b) | [`v0.77.0`](https://github.com/mjbrisebois/hc-zome-mere-memory/tree/v0.77.0) |
 
 
 ### Changed back to tracking Holochain version
@@ -58,7 +57,11 @@ The Mere Memory minor version is bumped whenever the HDK version changes.
 > Holochain compatibility will be based on WASM's host function usage.  Until we see how that model
 > works, it makes more sense to map versions against Holochain's versions.
 
-| Holochain Version                                                                                          | Commit Date    | Lair Version                                                                                | Mere Memory Zome                                                             |
+| Holochain Version (pre-beta)                                                                               | Commit Date    | Lair Version                                                                                | Mere Memory Zome                                                             |
 |------------------------------------------------------------------------------------------------------------|----------------|---------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
 | [`v0.1.0-beta-rc.3`](https://github.com/holochain/holochain/tree/60c042dbc8cc11aef091931c2758bb3e0d816662) | *Jan 17, 2023* | [`v0.2.3`](https://github.com/holochain/lair/tree/cbfbefefe43073904a914c8181a450209a74167b) | [`v0.77.0`](https://github.com/mjbrisebois/hc-zome-mere-memory/tree/v0.77.0) |
 | [`v0.1.0-beta-rc.4`](https://github.com/holochain/holochain/tree/2730fc80a4c87144fc0a755862628af5448b96fd) | *Jan 20, 2023* | [`v0.2.3`](https://github.com/holochain/lair/tree/cbfbefefe43073904a914c8181a450209a74167b) | [`v0.78.0`](https://github.com/mjbrisebois/hc-zome-mere-memory/tree/v0.78.0) |
+
+| Holochain Version (beta)                                                                         | Commit Date    | Lair Version                                                                                | Mere Memory Zome                                                             |
+|--------------------------------------------------------------------------------------------------|----------------|---------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
+| [`v0.1.0`](https://github.com/holochain/holochain/tree/41150668b18a57f4dc801a0b3439c1c76e149064) | *Jan 26, 2023* | [`v0.2.3`](https://github.com/holochain/lair/tree/cbfbefefe43073904a914c8181a450209a74167b) | [`v0.79.0`](https://github.com/mjbrisebois/hc-zome-mere-memory/tree/v0.79.0) |
