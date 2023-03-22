@@ -15,13 +15,13 @@ publish-crate:			test-debug
 
 mere-memory-zome:	$(MERE_MEMORY_WASM)
 
-$(MERE_MEMORY_WASM):	Cargo.toml src/*.rs mere_memory_types/Cargo.toml mere_memory_types/src/*.rs default.nix
+$(MERE_MEMORY_WASM):	Cargo.toml src/*.rs mere_memory_types/Cargo.toml mere_memory_types/src/*.rs flake.lock
 	@echo "Building zome: $@"; \
 	RUST_BACKTRACE=1 CARGO_TARGET_DIR=target cargo build \
 		--release --target wasm32-unknown-unknown
 	@touch $@ # Cargo must have a cache somewhere because it doesn't update the file time
 
-$(CORE_WASM):		mere_memory_core/Cargo.toml mere_memory_core/src/*.rs default.nix  mere_memory_types/Cargo.toml mere_memory_types/src/*.rs
+$(CORE_WASM):		mere_memory_core/Cargo.toml mere_memory_core/src/*.rs flake.lock  mere_memory_types/Cargo.toml mere_memory_types/src/*.rs
 	@echo "Building zome: $@"; \
 	cd mere_memory_core; RUST_BACKTRACE=1 CARGO_TARGET_DIR=../target cargo build \
 		--release --target wasm32-unknown-unknown
@@ -71,11 +71,11 @@ test-docs:
 build-docs:			test-docs
 	cd mere_memory_types; cargo doc
 
-PRE_HDK_VERSION = "0.1.0-beta-rc.3"
-NEW_HDK_VERSION = "0.1.0"
+PRE_HDK_VERSION = "0.1.0"
+NEW_HDK_VERSION = "0.2.0-beta-rc.1"
 
-PRE_HDI_VERSION = "0.2.0-beta-rc.3"
-NEW_HDI_VERSION = "0.2.0"
+PRE_HDI_VERSION = "0.2.0"
+NEW_HDI_VERSION = "0.3.0-beta-rc.1"
 
 GG_REPLACE_LOCATIONS = ':(exclude)*.lock' Cargo.toml mere_memory_types/ mere_memory_core/
 
