@@ -1,6 +1,6 @@
 
-MERE_MEMORY_WASM	= target/wasm32-unknown-unknown/release/mere_memory.wasm
-CORE_WASM		= target/wasm32-unknown-unknown/release/mere_memory_types.wasm
+MERE_MEMORY_WASM	= target/wasm32-unknown-unknown/release/mere_memory_api.wasm
+CORE_WASM		= target/wasm32-unknown-unknown/release/mere_memory.wasm
 STORAGE_DNA		= packs/dna/storage.dna
 STORAGE_APP		= packs/app/Storage.happ
 STORAGE_APP_CLONABLE	= packs/app_clonable/Storage.happ
@@ -21,9 +21,9 @@ $(MERE_MEMORY_WASM):	Cargo.toml src/*.rs mere_memory_types/Cargo.toml mere_memor
 		--release --target wasm32-unknown-unknown
 	@touch $@ # Cargo must have a cache somewhere because it doesn't update the file time
 
-$(CORE_WASM):		mere_memory_core/Cargo.toml mere_memory_core/src/*.rs flake.lock  mere_memory_types/Cargo.toml mere_memory_types/src/*.rs
+$(CORE_WASM):		mere_memory/Cargo.toml mere_memory/src/*.rs flake.lock  mere_memory_types/Cargo.toml mere_memory_types/src/*.rs
 	@echo "Building zome: $@"; \
-	cd mere_memory_core; RUST_BACKTRACE=1 CARGO_TARGET_DIR=../target cargo build \
+	cd mere_memory; RUST_BACKTRACE=1 CARGO_TARGET_DIR=../target cargo build \
 		--release --target wasm32-unknown-unknown
 
 $(STORAGE_DNA):			$(CORE_WASM) $(MERE_MEMORY_WASM) packs/dna/dna.yaml Cargo.toml mere_memory_types/Cargo.toml mere_memory_types/src/*.rs
@@ -77,7 +77,7 @@ NEW_HDK_VERSION = "0.2.0-beta-rc.1"
 PRE_HDI_VERSION = "0.2.0"
 NEW_HDI_VERSION = "0.3.0-beta-rc.1"
 
-GG_REPLACE_LOCATIONS = ':(exclude)*.lock' Cargo.toml mere_memory_types/ mere_memory_core/
+GG_REPLACE_LOCATIONS = ':(exclude)*.lock' Cargo.toml mere_memory_types/ mere_memory/
 
 update-hdk-version:
 	git grep -l '$(PRE_HDK_VERSION)' -- $(GG_REPLACE_LOCATIONS) | xargs sed -i 's|$(PRE_HDK_VERSION)|$(NEW_HDK_VERSION)|g'

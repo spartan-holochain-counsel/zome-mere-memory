@@ -875,7 +875,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "mere_memory_core"
+name = "mere_memory"
 version = "0.0.0"
 dependencies = [
  "hdi",

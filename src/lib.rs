@@ -9,7 +9,7 @@ pub use mere_memory_types::{
     MemoryEntry,
     MemoryBlockEntry,
 };
-pub use mere_memory_core::{
+pub use mere_memory::{
     EntryTypes, LinkTypes,
 };
 

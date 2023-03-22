@@ -777,7 +777,7 @@ dependencies = [
  "essence_payloads",
  "hdk",
  "hex",
- "mere_memory_core",
+ "mere_memory",
  "mere_memory_types",
  "rand",
  "serde",
@@ -1246,7 +1246,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "mere_memory_core"
+name = "mere_memory"
 version = "0.0.0"
 dependencies = [
  "hdi",

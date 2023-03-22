@@ -26,7 +26,7 @@ function basic_tests () {
     it("should create a memory using 'save_bytes'", async function () {
 	this.timeout( 10_000 );
 
-	let addr			= new HoloHash( await clients.alice.call( "memory", "mere_memory", "save_bytes", input ) );
+	let addr			= new HoloHash( await clients.alice.call( "memory", "mere_memory_api", "save_bytes", input ) );
 	log.normal("New memory address: %s", String(addr) );
 
 	memory_addr			= addr;
@@ -35,7 +35,7 @@ function basic_tests () {
     it("should get a memory using 'retrieve_bytes'", async function () {
 	this.timeout( 10_000 );
 
-	memory				= await clients.alice.call( "memory", "mere_memory", "get_memory", memory_addr );
+	memory				= await clients.alice.call( "memory", "mere_memory_api", "get_memory", memory_addr );
 	log.normal("New memory: %s", json.debug(memory) );
     });
 
@@ -43,14 +43,14 @@ function basic_tests () {
 	this.timeout( 10_000 );
 
 	{
-	    let hash			= await clients.alice.call( "memory", "mere_memory", "calculate_hash", input );
+	    let hash			= await clients.alice.call( "memory", "mere_memory_api", "calculate_hash", input );
 	    log.normal("Calculated hash: %s", hash );
 
 	    expect( hash		).to.deep.equal( memory.hash );
 	}
 
 	{
-	    let hash			= await clients.alice.call( "memory", "mere_memory", "calculate_hash", Buffer.from("hello world") );
+	    let hash			= await clients.alice.call( "memory", "mere_memory_api", "calculate_hash", Buffer.from("hello world") );
 	    log.normal("Calculated hash: %s", hash );
 
 	    expect( hash		).to.equal("b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9");
@@ -61,14 +61,14 @@ function basic_tests () {
 	this.timeout( 10_000 );
 
 	{
-	    let exists			= await clients.alice.call( "memory", "mere_memory", "memory_exists", input );
+	    let exists			= await clients.alice.call( "memory", "mere_memory_api", "memory_exists", input );
 	    log.normal("Memory exists: %s", exists );
 
 	    expect( exists		).to.be.true;
 	}
 
 	{
-	    let exists			= await clients.alice.call( "memory", "mere_memory", "memory_exists", Buffer.from("hello world") );
+	    let exists			= await clients.alice.call( "memory", "mere_memory_api", "memory_exists", Buffer.from("hello world") );
 	    log.normal("Memory exists: %s", exists );
 
 	    expect( exists		).to.be.false;

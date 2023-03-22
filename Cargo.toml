@@ -9,12 +9,12 @@ description = ""
 readme = "README.md"
 
 [lib]
-name = "mere_memory"
+name = "mere_memory_api"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 essence_payloads = "0.1"
-mere_memory_core = {path = "./mere_memory_core"}
+mere_memory = {path = "./mere_memory"}
 mere_memory_types = {path = "./mere_memory_types"}
 hdk = "0.2.0-beta-rc.1"
 hex = "0"

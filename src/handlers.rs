@@ -7,7 +7,7 @@ pub use mere_memory_types::{
     MemoryBlockEntry,
     SequencePosition,
 };
-pub use mere_memory_core::{
+pub use mere_memory::{
     ToInput,
 };
 use crate::{
