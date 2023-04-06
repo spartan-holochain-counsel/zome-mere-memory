@@ -8,14 +8,13 @@ const fs				= require('fs');
 const expect				= require('chai').expect;
 const { HoloHash }			= require('@whi/holo-hash');
 const { Holochain }			= require('@whi/holochain-backdrop');
+const { CruxConfig }			= require('@whi/crux-payload-parser');
 const json				= require('@whi/json');
-
-const { backdrop }			= require('./setup.js');
 
 
 const delay				= (n) => new Promise(f => setTimeout(f, n));
 const MEMORY_PATH			= path.join(__dirname, "../../packs/dna/storage.dna");
-let clients;
+let client;
 
 
 function basic_tests () {
@@ -26,7 +25,8 @@ function basic_tests () {
     it("should create a memory using 'save_bytes'", async function () {
 	this.timeout( 10_000 );
 
-	let addr			= new HoloHash( await clients.alice.call( "memory", "mere_memory_api", "save_bytes", input ) );
+	let resp			= await client.call( "memory", "mere_memory_api", "save_bytes", input )
+	let addr			= new HoloHash( resp );
 	log.normal("New memory address: %s", String(addr) );
 
 	memory_addr			= addr;
@@ -35,7 +35,7 @@ function basic_tests () {
     it("should get a memory using 'retrieve_bytes'", async function () {
 	this.timeout( 10_000 );
 
-	memory				= await clients.alice.call( "memory", "mere_memory_api", "get_memory", memory_addr );
+	memory				= await client.call( "memory", "mere_memory_api", "get_memory", memory_addr );
 	log.normal("New memory: %s", json.debug(memory) );
     });
 
@@ -43,14 +43,14 @@ function basic_tests () {
 	this.timeout( 10_000 );
 
 	{
-	    let hash			= await clients.alice.call( "memory", "mere_memory_api", "calculate_hash", input );
+	    let hash			= await client.call( "memory", "mere_memory_api", "calculate_hash", input );
 	    log.normal("Calculated hash: %s", hash );
 
 	    expect( hash		).to.deep.equal( memory.hash );
 	}
 
 	{
-	    let hash			= await clients.alice.call( "memory", "mere_memory_api", "calculate_hash", Buffer.from("hello world") );
+	    let hash			= await client.call( "memory", "mere_memory_api", "calculate_hash", Buffer.from("hello world") );
 	    log.normal("Calculated hash: %s", hash );
 
 	    expect( hash		).to.equal("b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9");
@@ -61,14 +61,14 @@ function basic_tests () {
 	this.timeout( 10_000 );
 
 	{
-	    let exists			= await clients.alice.call( "memory", "mere_memory_api", "memory_exists", input );
+	    let exists			= await client.call( "memory", "mere_memory_api", "memory_exists", input );
 	    log.normal("Memory exists: %s", exists );
 
 	    expect( exists		).to.be.true;
 	}
 
 	{
-	    let exists			= await clients.alice.call( "memory", "mere_memory_api", "memory_exists", Buffer.from("hello world") );
+	    let exists			= await client.call( "memory", "mere_memory_api", "memory_exists", Buffer.from("hello world") );
 	    log.normal("Memory exists: %s", exists );
 
 	    expect( exists		).to.be.false;
@@ -80,19 +80,23 @@ function errors_tests () {
 }
 
 describe("Zome: Mere Memory", () => {
-
-    const holochain			= new Holochain();
+    const crux				= new CruxConfig();
+    const holochain			= new Holochain({
+	"default_loggers": !!process.env.LOG_LEVEL,
+    });
 
     before(async function () {
 	this.timeout( 30_000 );
 
-	clients				= await backdrop( holochain, {
-	    "memory": MEMORY_PATH,
-	}, [
-	    "alice",
-	], {
-	    "parse_entities": false,
+	const clients			= await holochain.backdrop({
+	    "test": {
+		"memory":	MEMORY_PATH,
+	    },
 	});
+
+	client				= clients.alice.test.client;
+
+	crux.upgrade( client );
     });
 
     describe("Basic", basic_tests.bind( this, holochain ) );
