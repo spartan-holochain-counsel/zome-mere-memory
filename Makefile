@@ -32,18 +32,25 @@ $(STORAGE_APP):			$(STORAGE_DNA) packs/app/happ.yaml
 	hc app pack packs/app/
 $(STORAGE_APP_CLONABLE):	$(STORAGE_DNA) packs/app_clonable/happ.yaml
 	hc app pack packs/app_clonable/
-use-local-holochain-backdrop:
+
+use-local-backdrop:
 	cd tests; npm uninstall @whi/holochain-backdrop
 	cd tests; npm install --save-dev ../../node-holochain-backdrop
-use-npm-holochain-backdrop:
+use-npm-backdrop:
 	cd tests; npm uninstall @whi/holochain-backdrop
 	cd tests; npm install --save-dev @whi/holochain-backdrop
-use-local-holochain-client:
+use-local--client:
 	cd tests; npm uninstall @whi/holochain-client
 	cd tests; npm install --save-dev ../../js-holochain-client
-use-npm-holochain-client:
+use-npm-client:
 	cd tests; npm uninstall @whi/holochain-client
 	cd tests; npm install --save-dev @whi/holochain-client
+use-local-crux:
+	cd tests; npm uninstall @whi/crux-payload-parser
+	cd tests; npm install --save-dev ../../js-crux-payload-parser
+use-npm-crux:
+	cd tests; npm uninstall @whi/crux-payload-parser
+	cd tests; npm install --save-dev @whi/crux-payload-parser
 
 use-local:		use-local-holochain-client use-local-holochain-backdrop
 use-npm:		  use-npm-holochain-client   use-npm-holochain-backdrop
@@ -71,11 +78,11 @@ test-docs:
 build-docs:			test-docs
 	cd mere_memory_types; cargo doc
 
-PRE_HDK_VERSION = "0.1.0"
-NEW_HDK_VERSION = "0.2.0-beta-rc.1"
+PRE_HDK_VERSION = "0.2.0-beta-rc.1"
+NEW_HDK_VERSION = "0.2.0-beta-rc.3"
 
-PRE_HDI_VERSION = "0.2.0"
-NEW_HDI_VERSION = "0.3.0-beta-rc.1"
+PRE_HDI_VERSION = "0.3.0-beta-rc.1"
+NEW_HDI_VERSION = "0.3.0-beta-rc.3"
 
 GG_REPLACE_LOCATIONS = ':(exclude)*.lock' Cargo.toml mere_memory_types/ mere_memory/
 
