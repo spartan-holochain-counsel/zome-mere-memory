@@ -803,9 +803,9 @@ dependencies = [
 
 [[package]]
 name = "hdk"
-version = "0.2.0-beta-rc.3"
+version = "0.2.0-beta-rc.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "720a3312c269dcf3bcc51896d272927d4cf6af47288115ece5fb7f6acdababb3"
+checksum = "079f7234f27834ff4dc03047798c35747ceca7183c76a0417ec475e108598ed6"
 dependencies = [
  "getrandom",
  "hdi",
@@ -946,14 +946,15 @@ dependencies = [
 
 [[package]]
 name = "holochain_zome_types"
-version = "0.2.0-beta-rc.3"
+version = "0.2.0-beta-rc.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0d140287e0ff5e098f3fe2f3bd2b3de7648c26c14e50a7a9c4024eac3ce8803e"
+checksum = "e762a1494e4432a82910d72c68d5013cd6dc4ccbdd0c5d975a2804c37f18a0d1"
 dependencies = [
  "holo_hash",
  "holochain_integrity_types",
  "holochain_serialized_bytes",
  "holochain_wasmer_common",
+ "kitsune_p2p_bin_data",
  "kitsune_p2p_block",
  "kitsune_p2p_dht",
  "kitsune_p2p_timestamp",

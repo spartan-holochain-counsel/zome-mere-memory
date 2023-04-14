@@ -39,9 +39,9 @@ use-local-backdrop:
 use-npm-backdrop:
 	cd tests; npm uninstall @whi/holochain-backdrop
 	cd tests; npm install --save-dev @whi/holochain-backdrop
-use-local--client:
+use-local-client:
 	cd tests; npm uninstall @whi/holochain-client
-	cd tests; npm install --save-dev ../../js-holochain-client
+	cd tests; npm install --save-dev ../../holochain-client-js
 use-npm-client:
 	cd tests; npm uninstall @whi/holochain-client
 	cd tests; npm install --save-dev @whi/holochain-client
@@ -78,11 +78,11 @@ test-docs:
 build-docs:			test-docs
 	cd mere_memory_types; cargo doc
 
-PRE_HDK_VERSION = "0.2.0-beta-rc.1"
-NEW_HDK_VERSION = "0.2.0-beta-rc.3"
+PRE_HDK_VERSION = "0.2.0-beta-rc.4"
+NEW_HDK_VERSION = "0.2.0"
 
-PRE_HDI_VERSION = "0.3.0-beta-rc.1"
-NEW_HDI_VERSION = "0.3.0-beta-rc.3"
+PRE_HDI_VERSION = "0.3.0-beta-rc.3"
+NEW_HDI_VERSION = "0.3.0"
 
 GG_REPLACE_LOCATIONS = ':(exclude)*.lock' Cargo.toml mere_memory_types/ mere_memory/
 
