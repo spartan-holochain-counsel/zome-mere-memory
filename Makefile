@@ -12,6 +12,8 @@ preview-crate:			test-debug
 	cd mere_memory_types; cargo publish --dry-run
 publish-crate:			test-debug
 	cd mere_memory_types; CARGO_HOME=$(HOME)/.cargo cargo publish
+reset-build:
+	rm -r target;
 
 mere-memory-zome:	$(MERE_MEMORY_WASM)
 

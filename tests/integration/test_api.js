@@ -5,11 +5,15 @@ const log				= require('@whi/stdlog')(path.basename( __filename ), {
 
 
 const fs				= require('fs');
+const crypto				= require('crypto');
 const expect				= require('chai').expect;
 const { HoloHash }			= require('@whi/holo-hash');
-const { Holochain }			= require('@whi/holochain-backdrop');
+const { Holochain,
+	HolochainClientLib }		= require('@whi/holochain-backdrop');
+const { ConductorError }		= HolochainClientLib;
 const { CruxConfig }			= require('@whi/crux-payload-parser');
 const json				= require('@whi/json');
+const { expect_reject }			= require('../utils.js');
 
 
 const delay				= (n) => new Promise(f => setTimeout(f, n));
@@ -77,6 +81,40 @@ function basic_tests () {
 }
 
 function errors_tests () {
+    it("should fail to create memory block larget than 4MB", async function () {
+	this.timeout( 10_000 );
+
+	await expect_reject( async () => {
+	    const chunk			= new Uint8Array( 2_097_153 ).fill(0);
+	    const block_addr		= await client.call( "memory", "mere_memory_api", "create_memory_block", {
+		"sequence": {
+		    "position": 1,
+		    "length": 1,
+		},
+		"bytes": Array.from(chunk),
+	    });
+	}, ConductorError, "InvalidCommit error: MemoryBlockEntry cannot be larger than 2MB (2,097,152 bytes)" );
+    });
+
+    it("should fail to create memory with wrong byte size", async function () {
+	this.timeout( 10_000 );
+
+	await expect_reject( async () => {
+	    const chunk			= crypto.randomBytes( 64 );
+	    const block_addr		= await client.call( "memory", "mere_memory_api", "create_memory_block", {
+		"sequence": {
+		    "position": 1,
+		    "length": 1,
+		},
+		"bytes": Array.from(chunk),
+	    });
+	    await client.call( "memory", "mere_memory_api", "create_memory", {
+		"hash":		new Array(32).fill(0),
+		"block_addresses": [ block_addr ],
+		"memory_size":	65,
+	    });
+	}, ConductorError, "InvalidCommit error: MemoryEntry 'memory_size' does not equal the sum of its blocks" );
+    });
 }
 
 describe("Zome: Mere Memory", () => {
