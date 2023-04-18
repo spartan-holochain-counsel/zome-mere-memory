@@ -23,8 +23,41 @@ let client;
 
 function basic_tests () {
     const input				= (new Uint8Array(3_000_000)).fill(1);
-    let memory_addr;
+    let memory_addr, memory_block_addr;
     let memory;
+
+    it("should create a memory block", async function () {
+	this.timeout( 10_000 );
+
+	let input			= {
+	    "sequence": {
+		"position": 1,
+		"length": 1,
+	    },
+	    "bytes": crypto.randomBytes( 100 ),
+	};
+	let resp			= await client.call( "memory", "mere_memory_api", "create_memory_block", input )
+	let addr			= new HoloHash( resp );
+	log.normal("New memory block address: %s", String(addr) );
+
+	memory_block_addr		= addr;
+    });
+
+    it("should create a memory", async function () {
+	this.timeout( 10_000 );
+
+	let hash			= new Array(32).fill(0);
+	let input			= {
+	    hash,
+	    "block_addresses": [
+		memory_block_addr,
+	    ],
+	    "memory_size": 100,
+	};
+	let resp			= await client.call( "memory", "mere_memory_api", "create_memory", input )
+	let addr			= new HoloHash( resp );
+	log.normal("New memory address: %s", String(addr) );
+    });
 
     it("should create a memory using 'save_bytes'", async function () {
 	this.timeout( 10_000 );
@@ -81,7 +114,7 @@ function basic_tests () {
 }
 
 function errors_tests () {
-    it("should fail to create memory block larget than 4MB", async function () {
+    it("should fail to create memory block because it is too big", async function () {
 	this.timeout( 10_000 );
 
 	await expect_reject( async () => {

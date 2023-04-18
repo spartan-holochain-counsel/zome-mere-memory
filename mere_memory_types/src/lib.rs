@@ -86,5 +86,6 @@ pub struct SequencePosition {
 #[derive(Clone)]
 pub struct MemoryBlockEntry {
     pub sequence: SequencePosition,
+    #[serde(with = "serde_bytes")]
     pub bytes: Vec<u8>,
 }
