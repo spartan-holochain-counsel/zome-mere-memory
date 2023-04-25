@@ -28,8 +28,8 @@ fn init(_: ()) -> ExternResult<InitCallbackResult> {
 
 
 #[hdk_extern]
-fn save_bytes(sbytes: SerializedBytes) -> ExternResult<Response<EntryHash>> {
-    let entry = catch!( handlers::remember_bytes( sbytes.bytes() ) );
+fn save_bytes(sbytes: serde_bytes::ByteBuf) -> ExternResult<Response<EntryHash>> {
+    let entry = catch!( handlers::remember_bytes( &sbytes.into_vec() ) );
 
     Ok(success( entry ))
 }
@@ -42,15 +42,15 @@ fn retrieve_bytes(addr: EntryHash) -> ExternResult<Response<Vec<u8>>> {
 }
 
 #[hdk_extern]
-fn calculate_hash(sbytes: SerializedBytes) -> ExternResult<Response<String>> {
-    let hash = mere_memory_types::calculate_hash( &sbytes.bytes() );
+fn calculate_hash(sbytes: serde_bytes::ByteBuf) -> ExternResult<Response<String>> {
+    let hash = mere_memory_types::calculate_hash( &sbytes.into_vec() );
 
     Ok(success( hex::encode( hash ) ))
 }
 
 #[hdk_extern]
-fn memory_exists(sbytes: SerializedBytes) -> ExternResult<Response<bool>> {
-    let answer = catch!( handlers::memory_exists( sbytes.bytes() ) );
+fn memory_exists(sbytes: serde_bytes::ByteBuf) -> ExternResult<Response<bool>> {
+    let answer = catch!( handlers::memory_exists( &sbytes.into_vec() ) );
 
     Ok(success( answer ))
 }
