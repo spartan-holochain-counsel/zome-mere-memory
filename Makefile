@@ -80,11 +80,11 @@ test-docs:
 build-docs:			test-docs
 	cd mere_memory_types; cargo doc
 
-PRE_HDK_VERSION = "0.2.0-beta-rc.4"
-NEW_HDK_VERSION = "0.2.0"
+PRE_HDK_VERSION = "0.2.0"
+NEW_HDK_VERSION = "0.3.0-beta-dev.2"
 
-PRE_HDI_VERSION = "0.3.0-beta-rc.3"
-NEW_HDI_VERSION = "0.3.0"
+PRE_HDI_VERSION = "0.3.0"
+NEW_HDI_VERSION = "0.4.0-beta-dev.1"
 
 GG_REPLACE_LOCATIONS = ':(exclude)*.lock' Cargo.toml mere_memory_types/ mere_memory/
 

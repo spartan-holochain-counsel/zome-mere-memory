@@ -541,9 +541,9 @@ dependencies = [
 
 [[package]]
 name = "hdi"
-version = "0.3.0"
+version = "0.4.0-beta-dev.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "06292d997b21a2a57b47f2ac84fa67e6889b7cb9b34930748c2d98cf9547b04d"
+checksum = "8ba3d5c3319dac0c106f376cf36628f157639d7bce97850aee4de740ddba89de"
 dependencies = [
  "hdk_derive",
  "holo_hash",
@@ -556,9 +556,9 @@ dependencies = [
 
 [[package]]
 name = "hdk_derive"
-version = "0.2.0"
+version = "0.3.0-beta-dev.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d65bf8cf99d28f7cd6798f2c58c0687e16627f3acac270a1ed79b1d098215cd9"
+checksum = "97f8697bf918319176be90a4db1777a2f5b9eb1621e149d7e87d058f522fe518"
 dependencies = [
  "darling",
  "heck",
@@ -599,9 +599,9 @@ checksum = "7f24254aa9a54b5c858eaee2f5bccdb46aaf0e486a595ed5fd8f86ba55232a70"
 
 [[package]]
 name = "holo_hash"
-version = "0.2.0"
+version = "0.3.0-beta-dev.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6226119f4b5e8a11903f7609db1a11c7348409cb29c2f750633fab8b7c89feaf"
+checksum = "8a52f7a2218eb61bc53e27774895090085675c443a575b6f6ab71dd785b38dee"
 dependencies = [
  "holochain_serialized_bytes",
  "holochain_wasmer_common",
@@ -613,9 +613,9 @@ dependencies = [
 
 [[package]]
 name = "holochain_integrity_types"
-version = "0.2.0"
+version = "0.3.0-beta-dev.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6422c6712a8b566a8e2c831665110758eda3e81d7ee752a73b815e356437e2d7"
+checksum = "9a2035b6537796eaa5cb17f64ce0952005a3c7f369bfd656d48ef76839b5f9e8"
 dependencies = [
  "holo_hash",
  "holochain_serialized_bytes",
@@ -762,9 +762,9 @@ dependencies = [
 
 [[package]]
 name = "kitsune_p2p_dht_arc"
-version = "0.2.0"
+version = "0.3.0-beta-dev.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7477f21f641ede028524a659723a20acd56b57992576db3c0c8d08dc5f18a0c1"
+checksum = "c1c945e4106e525af940640f1f0d4895350f2aca5177bd57a6fa39fc6e1c0f52"
 dependencies = [
  "derive_more",
  "gcollections",

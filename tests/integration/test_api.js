@@ -153,7 +153,7 @@ function errors_tests () {
 describe("Zome: Mere Memory", () => {
     const crux				= new CruxConfig();
     const holochain			= new Holochain({
-	"default_loggers": !!process.env.LOG_LEVEL,
+	"default_stdout_loggers": !!process.env.LOG_LEVEL,
     });
 
     before(async function () {
