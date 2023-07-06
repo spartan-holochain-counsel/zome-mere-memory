@@ -16,6 +16,8 @@ reset-build:
 	rm -r target;
 
 mere-memory-zome:	$(MERE_MEMORY_WASM)
+rust_comile_fix:
+	touch mere_memory_types/src/lib.rs # force rebuild otherwise rust fails
 
 $(MERE_MEMORY_WASM):	Cargo.toml src/*.rs mere_memory_types/Cargo.toml mere_memory_types/src/*.rs flake.lock
 	@echo "Building zome: $@"; \
@@ -24,6 +26,7 @@ $(MERE_MEMORY_WASM):	Cargo.toml src/*.rs mere_memory_types/Cargo.toml mere_memor
 	@touch $@ # Cargo must have a cache somewhere because it doesn't update the file time
 
 $(CORE_WASM):		mere_memory/Cargo.toml mere_memory/src/*.rs flake.lock  mere_memory_types/Cargo.toml mere_memory_types/src/*.rs
+	make rust_comile_fix;
 	@echo "Building zome: $@"; \
 	cd mere_memory; RUST_BACKTRACE=1 CARGO_TARGET_DIR=../target cargo build \
 		--release --target wasm32-unknown-unknown
@@ -80,11 +83,11 @@ test-docs:
 build-docs:			test-docs
 	cd mere_memory_types; cargo doc
 
-PRE_HDK_VERSION = "0.2.0"
-NEW_HDK_VERSION = "0.3.0-beta-dev.2"
+PRE_HDK_VERSION = "0.3.0-beta-dev.2"
+NEW_HDK_VERSION = "0.3.0-beta-dev.7"
 
-PRE_HDI_VERSION = "0.3.0"
-NEW_HDI_VERSION = "0.4.0-beta-dev.1"
+PRE_HDI_VERSION = "0.4.0-beta-dev.1"
+NEW_HDI_VERSION = "0.4.0-beta-dev.5"
 
 GG_REPLACE_LOCATIONS = ':(exclude)*.lock' Cargo.toml mere_memory_types/ mere_memory/
 
