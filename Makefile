@@ -8,13 +8,6 @@ STORAGE_APP_CLONABLE	= packs/app_clonable/Storage.happ
 #
 # Project
 #
-preview-crate:			test-debug
-	cd mere_memory_types; cargo publish --dry-run
-publish-crate:			test-debug
-	cd mere_memory_types; CARGO_HOME=$(HOME)/.cargo cargo publish
-reset-build:
-	rm -r target;
-
 mere-memory-zome:	$(MERE_MEMORY_WASM)
 rust_comile_fix:
 	touch mere_memory_types/src/lib.rs # force rebuild otherwise rust fails
@@ -59,6 +52,21 @@ use-npm-crux:
 
 use-local:		use-local-holochain-client use-local-holochain-backdrop
 use-npm:		  use-npm-holochain-client   use-npm-holochain-backdrop
+
+
+
+#
+# Packages
+#
+preview-crate:			test-debug
+	cd mere_memory_types; cargo publish --dry-run --allow-dirty
+publish-crate:			test-debug .cargo/credentials
+	cd mere_memory_types; cargo publish
+.cargo/credentials:
+	cp ~/$@ $@
+reset-build:
+	rm -r target;
+
 
 
 #
