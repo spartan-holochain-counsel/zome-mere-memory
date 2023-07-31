@@ -31,12 +31,18 @@ $(STORAGE_APP):			$(STORAGE_DNA) packs/app/happ.yaml
 $(STORAGE_APP_CLONABLE):	$(STORAGE_DNA) packs/app_clonable/happ.yaml
 	hc app pack packs/app_clonable/
 
+use-local-holo-hash:
+	cd tests; npm uninstall @spartan-hc/holo-hash
+	cd tests; npm install --save-dev ../../holo-hash-js/
+use-npm-holo-hash:
+	cd tests; npm uninstall @spartan-hc/holo-hash
+	cd tests; npm install --save-dev @spartan-hc/holo-hash
 use-local-backdrop:
-	cd tests; npm uninstall @whi/holochain-backdrop
+	cd tests; npm uninstall @spartan-hc/holochain-backdrop
 	cd tests; npm install --save-dev ../../node-holochain-backdrop
 use-npm-backdrop:
-	cd tests; npm uninstall @whi/holochain-backdrop
-	cd tests; npm install --save-dev @whi/holochain-backdrop
+	cd tests; npm uninstall @spartan-hc/holochain-backdrop
+	cd tests; npm install --save-dev @spartan-hc/holochain-backdrop
 use-local-client:
 	cd tests; npm uninstall @whi/holochain-client
 	cd tests; npm install --save-dev ../../holochain-client-js
@@ -78,7 +84,7 @@ tests/node_modules:		tests/package-lock.json
 test:			$(STORAGE_APP) tests/node_modules
 	cd tests; npx mocha integration/test_api.js
 test-debug:		$(STORAGE_APP) tests/node_modules
-	cd tests; LOG_LEVEL=silly npx mocha integration/test_api.js
+	cd tests; LOG_LEVEL=trace npx mocha integration/test_api.js
 
 
 

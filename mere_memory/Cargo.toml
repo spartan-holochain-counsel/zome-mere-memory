@@ -4,7 +4,7 @@ version = "0.0.0"
 authors = ["Matthew Brisebois <matthew.brisebois@holo.host>"]
 edition = "2018"
 license = "CAL-1.0"
-repository = "https://github.com/mjbrisebois/hc-zome-mere-memory"
+repository = "https://github.com/spartan-holochain-counsel/hc-zome-mere-memory"
 description = ""
 readme = "README.md"
 

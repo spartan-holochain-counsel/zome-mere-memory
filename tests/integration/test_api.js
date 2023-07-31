@@ -1,23 +1,24 @@
-const path				= require('path');
-const log				= require('@whi/stdlog')(path.basename( __filename ), {
-    level: process.env.LOG_LEVEL || 'fatal',
-});
+import { Logger }			from '@whi/weblogger';
+const log				= new Logger("test-basic", process.env.LOG_LEVEL );
 
 
-const fs				= require('fs');
-const crypto				= require('crypto');
-const expect				= require('chai').expect;
-const { HoloHash }			= require('@whi/holo-hash');
-const { Holochain,
-	HolochainClientLib }		= require('@whi/holochain-backdrop');
-const { ConductorError }		= HolochainClientLib;
-const { CruxConfig }			= require('@whi/crux-payload-parser');
-const json				= require('@whi/json');
-const { expect_reject }			= require('../utils.js');
+import fs				from 'fs';
+import path				from 'path';
+import crypto				from 'crypto';
+import { expect }			from 'chai';
 
+import { HoloHash }			from '@spartan-hc/holo-hash';
+import { Holochain }			from '@spartan-hc/holochain-backdrop';
+import { CruxConfig }			from '@whi/crux-payload-parser';
+import json				from '@whi/json';
+
+import { expect_reject }		from '../utils.js';
+
+import HolochainClient			from '@whi/holochain-client';
+const { ConductorError }		= HolochainClient;
 
 const delay				= (n) => new Promise(f => setTimeout(f, n));
-const MEMORY_PATH			= path.join(__dirname, "../../packs/dna/storage.dna");
+const MEMORY_PATH			= new URL( "../../packs/dna/storage.dna", import.meta.url ).pathname;
 let client;
 
 
