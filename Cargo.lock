@@ -1261,7 +1261,7 @@ dependencies = [
 
 [[package]]
 name = "mere_memory_types"
-version = "0.88.0"
+version = "0.88.1"
 dependencies = [
  "getrandom",
  "hdi",
