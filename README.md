@@ -56,3 +56,8 @@ let response = call(
     bytes,
 )?;
 ```
+
+
+### Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md)
