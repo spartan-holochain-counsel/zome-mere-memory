@@ -4,3 +4,5 @@ target
 *.happ
 *.dna
 tests/node_modules
+zomelets/dist
+zomelets/node_modules

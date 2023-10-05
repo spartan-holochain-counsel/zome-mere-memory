@@ -16,5 +16,10 @@
     "test": "mocha"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@spartan-hc/app-interface-client": "^0.1.2",
+    "@spartan-hc/mere-memory-zomelets": "file:../zomelets",
+    "@whi/weblogger": "^0.2.0"
+  }
 }

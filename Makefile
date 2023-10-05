@@ -82,7 +82,7 @@ tests/node_modules:		tests/package-lock.json
 	cd tests; npm install
 	touch $@
 test:			$(STORAGE_APP) tests/node_modules
-	cd tests; npx mocha integration/test_api.js
+	cd tests; LOG_LEVEL=warn npx mocha integration/test_api.js
 test-debug:		$(STORAGE_APP) tests/node_modules
 	cd tests; LOG_LEVEL=trace npx mocha integration/test_api.js
 
@@ -108,3 +108,36 @@ update-hdk-version:
 	git grep -l '$(PRE_HDK_VERSION)' -- $(GG_REPLACE_LOCATIONS) | xargs sed -i 's|$(PRE_HDK_VERSION)|$(NEW_HDK_VERSION)|g'
 update-hdi-version:
 	git grep -l '$(PRE_HDI_VERSION)' -- $(GG_REPLACE_LOCATIONS) | xargs sed -i 's|$(PRE_HDI_VERSION)|$(NEW_HDI_VERSION)|g'
+
+
+
+#
+# Repository
+#
+clean-remove-chaff:
+	@find . -name '*~' -exec rm {} \;
+clean-files:		clean-remove-chaff
+	git clean -nd
+clean-files-force:	clean-remove-chaff
+	git clean -fd
+clean-files-all:	clean-remove-chaff
+	git clean -ndx
+clean-files-all-force:	clean-remove-chaff
+	git clean -fdx
+
+
+
+#
+# NPM packaging
+#
+prepare-zomelets-package:
+	cd zomelets; rm -f dist/*
+	cd zomelets; npx webpack
+	cd zomelets; MODE=production npx webpack
+	cd zomelets; gzip -kf dist/*.js
+preview-zomelets-package:	clean-files test prepare-zomelets-package
+	cd zomelets; npm pack --dry-run .
+create-zomelets-package:	clean-files test prepare-zomelets-package
+	cd zomelets; npm pack .
+publish-zomelets-package:	clean-files test prepare-zomelets-package
+	cd zomelets; npm publish --access public .
