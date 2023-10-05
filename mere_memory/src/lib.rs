@@ -1,3 +1,5 @@
+mod validation;
+
 use hdi::prelude::*;
 use mere_memory_types::{
     MemoryEntry,

@@ -1,11 +1,12 @@
+[![](https://img.shields.io/crates/v/mere_memory_types?style=flat-square)](https://crates.io/crates/mere_memory_types)
 
 # Mere Memory
 This package is intended to be built as WASM and used as a Zome in Holochain DNAs.
 
 
-[![](https://img.shields.io/github/issues-raw/mjbrisebois/hc-zome-mere-memory?style=flat-square)](https://github.com/mjbrisebois/hc-zome-mere-memory/issues)
-[![](https://img.shields.io/github/issues-closed-raw/mjbrisebois/hc-zome-mere-memory?style=flat-square)](https://github.com/mjbrisebois/hc-zome-mere-memory/issues?q=is%3Aissue+is%3Aclosed)
-[![](https://img.shields.io/github/issues-pr-raw/mjbrisebois/hc-zome-mere-memory?style=flat-square)](https://github.com/mjbrisebois/hc-zome-mere-memory/pulls)
+[![](https://img.shields.io/github/issues-raw/spartan-holochain-counsel/hc-zome-mere-memory?style=flat-square)](https://github.com/spartan-holochain-counsel/hc-zome-mere-memory/issues)
+[![](https://img.shields.io/github/issues-closed-raw/spartan-holochain-counsel/hc-zome-mere-memory?style=flat-square)](https://github.com/spartan-holochain-counsel/hc-zome-mere-memory/issues?q=is%3Aissue+is%3Aclosed)
+[![](https://img.shields.io/github/issues-pr-raw/spartan-holochain-counsel/hc-zome-mere-memory?style=flat-square)](https://github.com/spartan-holochain-counsel/hc-zome-mere-memory/pulls)
 
 
 ### Mere Memory Types Crate
@@ -19,7 +20,7 @@ For information on which versions of this package work for each Holochain releas
 
 ### Build the WASM
 Clone the Github repo
-[mjbrisebois/hc-zome-mere-memory](https://github.com/mjbrisebois/hc-zome-mere-memory) and run
+[spartan-holochain-counsel/hc-zome-mere-memory](https://github.com/spartan-holochain-counsel/hc-zome-mere-memory) and run
 
 ```bash
 nix-shell
@@ -55,3 +56,8 @@ let response = call(
     bytes,
 )?;
 ```
+
+
+### Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md)

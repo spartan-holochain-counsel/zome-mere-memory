@@ -6,11 +6,11 @@ integrity:
   properties: ~
   origin_time: 2022-07-21T00:00:00.000000Z
   zomes:
-    - name: mere_memory_core
-      bundled: ../../target/wasm32-unknown-unknown/release/mere_memory_core.wasm
-coordinator:
-  zomes:
     - name: mere_memory
       bundled: ../../target/wasm32-unknown-unknown/release/mere_memory.wasm
+coordinator:
+  zomes:
+    - name: mere_memory_api
+      bundled: ../../target/wasm32-unknown-unknown/release/mere_memory_api.wasm
       dependencies:
-        - name: mere_memory_core
+        - name: mere_memory

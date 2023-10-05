@@ -1,6 +1,6 @@
 //! Other Resources
 //!
-//! - Source code - [github.com/mjbrisebois/hc-zome-mere-memory](https://github.com/mjbrisebois/hc-zome-mere-memory)
+//! - Source code - [github.com/spartan-holochain-counsel/hc-zome-mere-memory](https://github.com/spartan-holochain-counsel/hc-zome-mere-memory)
 //! - Cargo package - [crates.io/crates/mere_memory_types](https://crates.io/crates/mere_memory_types)
 //!
 
@@ -86,5 +86,6 @@ pub struct SequencePosition {
 #[derive(Clone)]
 pub struct MemoryBlockEntry {
     pub sequence: SequencePosition,
+    #[serde(with = "serde_bytes")]
     pub bytes: Vec<u8>,
 }
