@@ -1,6 +1,6 @@
 [![](https://img.shields.io/crates/v/mere_memory_types?style=flat-square)](https://crates.io/crates/mere_memory_types)
 
-See source code [github.com/spartan-holochain-counsel/hc-zome-mere-memory](https://github.com/spartan-holochain-counsel/hc-zome-mere-memory)
+See source code [github.com/spartan-holochain-counsel/zome-mere-memory](https://github.com/spartan-holochain-counsel/zome-mere-memory)
 
 # Mere Memory Types
 Holochain entry types used by the Mere Memory zome.
