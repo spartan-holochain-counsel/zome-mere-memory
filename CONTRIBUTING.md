@@ -8,18 +8,18 @@ The purpose of this project is to build Holochain zomes that implement simple by
 
 ## Development
 
-
 ### Environment
 
-- Developed using rustc `1.66.1 (90743e729 2023-01-10)`
+- Developed using rustc rustc `1.71.1 (eb26296b5 2023-08-03)`
 - Enter `nix develop` for development environment dependencies.
 
 ### Building
 
 Make targets
 ```
-make target/wasm32-unknown-unknown/release/mere_memory.wasm
-make target/wasm32-unknown-unknown/release/mere_memory_api.wasm
+nix develop
+[nix-shell$] make target/wasm32-unknown-unknown/release/mere_memory.wasm
+[nix-shell$] make target/wasm32-unknown-unknown/release/mere_memory_api.wasm
 ```
 
 #### Crate Documentation
@@ -28,8 +28,14 @@ make target/wasm32-unknown-unknown/release/mere_memory_api.wasm
 make build-docs
 ```
 
+
 ### Release Process
-Each release involves publishing the `mere_memory_types` crate and creating a Github release.
+Each release involves
+
+1. (if changed) Publishing the `mere_memory_types` crate
+2. (if changed) Publishing the `@spartan-hc/mere-memory-zomelets` NPM package
+3. Creating a Github release.
+
 
 #### Publishing Types Crate
 
@@ -39,6 +45,16 @@ https://crates.io/crates/mere_memory_types
 make preview-crate
 make publish-crate
 ```
+
+### Publishing Zomelets NPM Package
+
+https://www.npmjs.com/package/@spartan-hc/mere-memory-zomelets
+
+```
+make preview-zomelets-package
+make publish-zomelets-package
+```
+
 
 #### Github Release
 https://github.com/spartan-holochain-counsel/hc-zome-mere-memory/releases
@@ -59,16 +75,19 @@ Replace in description
 - `<Holochain version>` with the Holochain version that is being used in [`flake.nix`](flake.nix)
 - `<HDI version>` with the `hdi` version used in [`mere_memory/Cargo.toml`](mere_memory/Cargo.toml)
 - `<HDK version>` with the `hdk` version used in [`Cargo.toml`](Cargo.toml)
+- `<Types version>` with the Types crate version that is in [`mere_memory_types/Cargo.toml`](mere_memory_types/Cargo.toml)
+- `<Zomelets version>` with the NPM package version in [`./zomelets/package.json`](./zomelets/package.json)
 
 ```
 ## Context
 
+- [@spartan-hc/mere-memory-zomelets `v<Zomelets version>`](https://www.npmjs.com/package/@spartan-hc/mere-memory-zomelets/v/<Zomelets version>)
 - Tested using [Holochain `v<Holochain version>`](https://github.com/holochain/holochain/tree/holochain-<Holochain version>)
 - [HDI `v<HDI version>`](https://docs.rs/hdi/<HDI version>/)
 - [HDK `v<HDK version>`](https://docs.rs/hdk/<HDK version>/)
 
 ### Types crate
-https://docs.rs/mere_memory_types/0.88.0/
+https://docs.rs/mere_memory_types/<Types version>/
 ```
 
 Upload WASMS
