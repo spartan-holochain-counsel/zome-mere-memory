@@ -17,9 +17,5 @@ essence_payloads = "0.1"
 mere_memory = {path = "./mere_memory"}
 mere_memory_types = {path = "./mere_memory_types"}
 hdk = "=0.2.2"
-hex = "0.4"
 serde = "1"
 thiserror = "1"
-
-[dev-dependencies]
-rand = "0.8.3"

@@ -1,6 +1,5 @@
 use essence::{ EssenceResponse };
 use hdk::prelude::*;
-use hex;
 
 mod errors;
 mod handlers;
@@ -26,31 +25,9 @@ fn init(_: ()) -> ExternResult<InitCallbackResult> {
     Ok(InitCallbackResult::Pass)
 }
 
-
 #[hdk_extern]
-fn save_bytes(sbytes: serde_bytes::ByteBuf) -> ExternResult<Response<EntryHash>> {
-    let entry = catch!( handlers::remember_bytes( &sbytes.into_vec() ) );
-
-    Ok(success( entry ))
-}
-
-#[hdk_extern]
-fn retrieve_bytes(addr: EntryHash) -> ExternResult<Response<Vec<u8>>> {
-    let bytes = catch!( handlers::retrieve_bytes( addr ) );
-
-    Ok(success( bytes ))
-}
-
-#[hdk_extern]
-fn calculate_hash(sbytes: serde_bytes::ByteBuf) -> ExternResult<Response<String>> {
-    let hash = mere_memory_types::calculate_hash( &sbytes.into_vec() );
-
-    Ok(success( hex::encode( hash ) ))
-}
-
-#[hdk_extern]
-fn memory_exists(sbytes: serde_bytes::ByteBuf) -> ExternResult<Response<bool>> {
-    let answer = catch!( handlers::memory_exists( &sbytes.into_vec() ) );
+fn memory_exists(hash: String) -> ExternResult<Response<bool>> {
+    let answer = catch!( handlers::memory_exists( hash ) );
 
     Ok(success( answer ))
 }

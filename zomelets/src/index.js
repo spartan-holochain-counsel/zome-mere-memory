@@ -5,6 +5,7 @@ import {
     Zomelet,
 }					from '@spartan-hc/zomelets';
 import { sha256 }			from 'js-sha256';
+import gzip_js				from 'gzip-js';
 
 
 export class Chunker {
@@ -75,6 +76,10 @@ const essence_transformer		= new Transformer({
 }, "Essence Payload Parser" );
 
 
+const DEFAULT_OPTS			= {
+    "compress": false,
+};
+
 export const MereMemoryZomelet		= new Zomelet({
     // Memory Block CRUD
     "create_memory_block": true,
@@ -85,19 +90,36 @@ export const MereMemoryZomelet		= new Zomelet({
     "get_memory": true,
 
     // Other
-    "calculate_hash": true,
-    "memory_exists": true,
+    async memory_exists ( input ) {
+	if ( typeof input !== "string" )
+	    input			= await this.functions.calculate_hash( input );
+
+	return await this.call( input );
+    },
 
     // Virtual functions
-    async save ( source ) {
+    async memory_exists_by_hash ( hash ) {
+	if ( typeof input !== "string" )
+	    input			= Buffer.from(input).toString("hex");
+
+	return await this.functions.memory_exists( input );
+    },
+    calculate_hash ( bytes ) {
+	return sha256.hex( bytes );
+    },
+    async save ( source, options ) {
 	if ( !(source instanceof Uint8Array ) )
 	    throw new TypeError(`Input must be a Uint8Array; not type ${typeof source}`);
 
-	const hash			= sha256.digest( source );
-	const chunks			= new Chunker( source );
+	const opts			= Object.assign( {}, DEFAULT_OPTS, options );
+	const bytes			= opts.compress
+	      ? new Uint8Array( gzip_js.zip( source ) )
+	      : source;
+	const hash			= await this.functions.calculate_hash( source );
+	const chunks			= new Chunker( bytes );
 	const block_addresses		= [];
 
-	// TODO: use promise.all
+	// TODO: use promise.all (probably wont work due to chain head changing mid call)
 	let position			= 1;
 	for ( let chunk of chunks ) {
 	    this.log.trace("Chunk %s/%s (%s bytes)", position, chunks.length, chunk.length.toLocaleString() );
@@ -115,13 +137,14 @@ export const MereMemoryZomelet		= new Zomelet({
 	let response			= await this.functions.create_memory({
 	    hash,
 	    block_addresses,
-	    "memory_size":	source.length,
+	    "memory_size":	bytes.length,
 	});
 
 	return new HoloHashes.HoloHash( response );
     },
-    async remember ( addr ) {
-	let memory			= await this.functions.get_memory( addr );
+    async remember ( addr, options ) {
+	const opts			= Object.assign( {}, DEFAULT_OPTS, options );
+	const memory			= await this.functions.get_memory( addr );
 
 	const bytes			= new Uint8Array( memory.memory_size );
 
@@ -133,7 +156,9 @@ export const MereMemoryZomelet		= new Zomelet({
 	    index		       += block.bytes.length;
 	}
 
-	return bytes;
+	return opts.compress
+	    ? gzip_js.unzip( bytes )
+	    : bytes;
     }
 });
 MereMemoryZomelet.addTransformer( essence_transformer );

@@ -16,7 +16,8 @@ import {
 }					from '@spartan-hc/app-interface-client';
 import json				from '@whi/json';
 
-import { expect_reject }		from '../utils.js';
+import { expect_reject,
+	 linearSuite }			from '../utils.js';
 
 const delay				= (n) => new Promise(f => setTimeout(f, n));
 const MEMORY_PATH			= new URL( "../../packs/dna/storage.dna", import.meta.url ).pathname;
@@ -47,7 +48,7 @@ describe("Zome: Mere Memory", () => {
 	);
     });
 
-    describe("Basic", basic_tests.bind( this, holochain ) );
+    linearSuite("Basic", basic_tests.bind( this, holochain ) );
 
     after(async () => {
 	await holochain.stop();
@@ -59,6 +60,7 @@ describe("Zome: Mere Memory", () => {
 
 function basic_tests () {
     const bytes				= (new Uint8Array(3_000_000)).fill(1);
+    const small_bytes			= crypto.randomBytes( 100 );
     let client;
     let app_client;
     let mere_memory_api;
@@ -68,6 +70,7 @@ function basic_tests () {
     before(async function () {
 	client				= new AppInterfaceClient( APP_PORT, {
 	    "logging": process.env.LOG_LEVEL || "fatal",
+	    // "logging": "normal",
 	});
 	app_client			= await client.app( "test-alice" );
 
@@ -86,7 +89,7 @@ function basic_tests () {
 		"position": 1,
 		"length": 1,
 	    },
-	    "bytes": crypto.randomBytes( 100 ),
+	    "bytes": small_bytes,
 	};
 	let addr			= await mere_memory_api.create_memory_block( input );
 	log.normal("New memory block address: %s", addr );
@@ -97,7 +100,7 @@ function basic_tests () {
     it("should create a memory", async function () {
 	this.timeout( 10_000 );
 
-	let hash			= new Array(32).fill(0);
+	let hash			= await mere_memory_api.calculate_hash( small_bytes );
 	let input			= {
 	    hash,
 	    "block_addresses": [
@@ -125,29 +128,29 @@ function basic_tests () {
 	log.normal("New memory: %s", json.debug(memory) );
     });
 
+    it("should create a memory using 'save' with compress flag", async function () {
+	this.timeout( 10_000 );
+
+	let addr			= await mere_memory_api.save( bytes, {
+	    "compress": true,
+	});
+	let compressed_memory		= await mere_memory_api.get_memory( addr );
+	log.normal("Compressed memory: %s", json.debug(compressed_memory) );
+
+	expect( memory.memory_size	).to.be.gt( compressed_memory.memory_size );
+
+	let result			= await mere_memory_api.remember( addr, {
+	    "compress": true,
+	});
+
+	expect( result.length		).to.equal( bytes.length );
+    });
+
     it("should get a memory using 'remember'", async function () {
 	this.timeout( 10_000 );
 
 	const memory			= await mere_memory_api.remember( memory_addr );
 	log.normal("Memory: %s", json.debug(memory) );
-    });
-
-    it("should calculate hash of the memory bytes", async function () {
-	this.timeout( 10_000 );
-
-	{
-	    const hash			= await mere_memory_api.calculate_hash( bytes );
-	    log.normal("Calculated hash: %s", hash );
-
-	    expect( hash		).to.deep.equal( memory.hash );
-	}
-
-	{
-	    const hash			= await mere_memory_api.calculate_hash( Buffer.from("hello world") );
-	    log.normal("Calculated hash: %s", hash );
-
-	    expect( hash		).to.equal("b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9");
-	}
     });
 
     it("should find a memory based on the hash", async function () {
@@ -194,10 +197,10 @@ function basic_tests () {
 			"position": 1,
 			"length": 1,
 		    },
-		    "bytes": Array.from(chunk),
+		    "bytes": chunk,
 		});
 		await app_client.call( "memory", "mere_memory_api", "create_memory", {
-		    "hash":		new Array(32).fill(0),
+		    "hash":		await mere_memory_api.calculate_hash( chunk ),
 		    "block_addresses": [ block_addr ],
 		    "memory_size":	65,
 		});

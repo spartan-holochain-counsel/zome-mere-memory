@@ -5,17 +5,7 @@
 //!
 
 use hdi::prelude::*;
-use sha2::{ Sha256, Digest };
 
-
-/// Get the hash of the given bytes as a hex string
-pub fn calculate_hash(bytes: &Vec<u8>) -> [u8; 32] {
-    let mut hasher = Sha256::new();
-
-    hasher.update( bytes );
-
-    hasher.finalize().into()
-}
 
 
 //

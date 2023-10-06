@@ -20,4 +20,3 @@ getrandom = { version = "=0.2.7", features = ["custom"] } # temporary fix for co
                                                           # - v0.2.2
 hdi = "=0.3.2"
 serde = "1"
-sha2 = "0"
