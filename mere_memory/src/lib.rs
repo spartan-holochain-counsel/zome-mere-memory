@@ -1,10 +1,8 @@
 mod validation;
 
+pub use mere_memory_types::*;
+
 use hdi::prelude::*;
-use mere_memory_types::{
-    MemoryEntry,
-    MemoryBlockEntry,
-};
 
 pub trait ToInput<T>
 where
@@ -38,5 +36,6 @@ pub enum EntryTypes {
 
 #[hdk_link_types]
 pub enum LinkTypes {
+    Memory,
     ByHash,
 }

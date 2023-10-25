@@ -1,11 +1,21 @@
-import HoloHashes			from '@spartan-hc/holo-hash';
-import Essence				from '@whi/essence';
 import {
-    Transformer,
+    ActionHash, EntryHash,
+}					from '@spartan-hc/holo-hash'; // approx. 11kb
+import {
     Zomelet,
-}					from '@spartan-hc/zomelets';
-import { sha256 }			from 'js-sha256';
-import gzip_js				from 'gzip-js';
+}					from '@spartan-hc/zomelets'; // approx. 7kb
+import { sha256 }			from 'js-sha256'; // approx. 9kb
+import {
+    gzipSync,
+    gunzipSync,
+}					from 'fflate'; // approx. 9kb
+
+
+function toHex( uint8Array ) {
+    return Array.from(
+	uint8Array, n => n.toString(16).padStart(2, '0')
+    ).join('');
+}
 
 
 export class Chunker {
@@ -63,67 +73,160 @@ export class Chunker {
 }
 
 
-const Interpreter			= new Essence.Translator();
-const essence_transformer		= new Transformer({
-    async output ( resp ) {
-	const payload			= Interpreter.parse( resp ).value();
-
-	if ( payload instanceof Error )
-	    throw payload;
-
-	return payload;
-    },
-}, "Essence Payload Parser" );
-
-
 const DEFAULT_OPTS			= {
     "compress": false,
+    "decompress": false,
+    "check_existing_memories": true,
 };
 
 export const MereMemoryZomelet		= new Zomelet({
     // Memory Block CRUD
-    "create_memory_block": true,
-    "get_memory_block": true,
+    "create_memory_block_entry": true,
+    "get_memory_block_entry": true,
 
     // Memory CRUD
-    "create_memory": true,
-    "get_memory": true,
+    "create_memory_entry": true,
+    "get_memory_entry": true,
 
     // Other
     async memory_exists ( input ) {
 	if ( typeof input !== "string" )
 	    input			= await this.functions.calculate_hash( input );
 
-	return await this.call( input );
+	const result			= await this.call( input );
+
+	if ( result === null )
+	    return false;
+
+	// Remove duplicate addresses
+	return Array.from(
+	    new Set(
+		result.map( addr => String(new EntryHash(addr)) )
+	    )
+	).map( addr => new EntryHash(addr) );
     },
 
     // Virtual functions
     async memory_exists_by_hash ( hash ) {
-	if ( typeof input !== "string" )
-	    input			= Buffer.from(input).toString("hex");
+	if ( typeof hash !== "string" )
+	    hash			= toHex( hash );
 
-	return await this.functions.memory_exists( input );
+	return await this.functions.memory_exists( hash );
     },
     calculate_hash ( bytes ) {
 	return sha256.hex( bytes );
     },
-    async save ( source, options ) {
-	if ( !(source instanceof Uint8Array ) )
-	    throw new TypeError(`Input must be a Uint8Array; not type ${typeof source}`);
+    async get_existing_memory ( hash, options ) {
+	const matches			= await this.functions.memory_exists_by_hash( hash );
+
+	if ( !matches )
+	    return null;
+
+	this.log.info("Found %s matches for hash '%s'", matches.length, hash );
+	const matched_memories		= (await Promise.all(
+	    matches.map( async target => {
+		try {
+		    return [ target, await this.functions.get_memory_entry( target ) ];
+		} catch (err) {
+		    return [ target, null ];
+		}
+	    })
+	)).filter( ([_, memory]) => memory !== null );
+
+	const memories			= matched_memories.filter( ([_, memory]) => memory.compression === null );
+	const compressed_memories	= matched_memories.filter( ([_, memory]) => memory.compression === "gzip" );
+	// Sort by memory size so that we check the smallest memories first
+	compressed_memories.sort( (a,b) => {
+	    return a[1].memory_size - b[1].memory_size;
+	});
+
+	// Check compressed memories first
+	this.log.debug("Checking %s compressed (gzip) memories:", compressed_memories.length );
+	for ( let [addr, memory] of compressed_memories ) {
+	    try {
+		// - Verify that the memory actually matches our hash
+		const result		= await this.functions.remember( addr, { "compress": true });
+		const true_hash		= await this.functions.calculate_hash( result );
+
+		if ( hash === true_hash ) {
+		    this.log.normal("Found matching memory for hash '%s': %s", hash, addr );
+		    return addr;
+		}
+	    } catch (err) {
+		this.log.warn("Failed to check existing memory '%s': %s", addr, String(err) );
+	    }
+	}
+
+	// Ignore uncompressed memories if compression is required
+	if ( options.compress === false ) {
+	    this.log.debug("Checking %s uncompressed memories:", memories.length );
+	    for ( let [addr, memory] of memories ) {
+		try {
+		    // - Verify that the memory actually matches our hash
+		    const result		= await this.functions.remember( addr );
+		    const true_hash		= await this.functions.calculate_hash( result );
+
+		    if ( hash === true_hash )
+			return addr;
+		} catch (err) {
+		    this.log.warn("Failed to check existing memory '%s': %s", addr, String(err) );
+		}
+	    }
+	}
+
+	return null;
+    },
+    async save ( bytes, options ) {
+	if ( !(bytes instanceof Uint8Array ) )
+	    throw new TypeError(`Input must be a Uint8Array; not type ${typeof bytes}`);
 
 	const opts			= Object.assign( {}, DEFAULT_OPTS, options );
-	const bytes			= opts.compress
-	      ? new Uint8Array( gzip_js.zip( source ) )
-	      : source;
-	const hash			= await this.functions.calculate_hash( source );
+	const hash			= await this.functions.calculate_hash( bytes );
+
+	let compression			= null;
+	let uncompressed_size		= null;
+
+	if ( opts.compress ) {
+	    uncompressed_size		= bytes.length;
+
+	    if ( typeof opts.compress === "function" ) {
+		this.log.info("Using custom compression");
+		const result		= await opts.compress( bytes )
+
+		compression		= result.type;
+		bytes			= new Uint8Array( result.bytes );
+	    }
+	    else {
+		const compressed_bytes	= gzipSync( bytes, {
+		    "mtime": 0,
+		});
+
+		compression		= "gzip";
+		bytes			= new Uint8Array( compressed_bytes );
+	    }
+	}
+
+	const memory_size		= bytes.length;
+
+	if ( opts.check_existing_memories === true ) {
+	    const addr			= await this.functions.get_existing_memory( hash, {
+		"compress": opts.compress,
+	    });
+
+	    if ( addr !== null )
+		return addr;
+	}
+	else
+	    this.log.warn("Check existing memories is turned off");
+
 	const chunks			= new Chunker( bytes );
 	const block_addresses		= [];
 
-	// TODO: use promise.all (probably wont work due to chain head changing mid call)
 	let position			= 1;
+	// We cannot use 'Promise.all' for this because it will cause a chain head moved error
 	for ( let chunk of chunks ) {
 	    this.log.trace("Chunk %s/%s (%s bytes)", position, chunks.length, chunk.length.toLocaleString() );
-	    let response		= await this.functions.create_memory_block({
+	    let response		= await this.functions.create_memory_block_entry({
 		"sequence": {
 		    "position": position++,
 		    "length": chunks.length,
@@ -131,37 +234,38 @@ export const MereMemoryZomelet		= new Zomelet({
 		"bytes": chunk,
 	    });
 
-	    block_addresses.push( new HoloHashes.HoloHash( response ) );
+	    block_addresses.push( new EntryHash( response ) );
 	}
 
-	let response			= await this.functions.create_memory({
+	let response			= await this.functions.create_memory_entry({
 	    hash,
+	    compression,
+	    uncompressed_size,
+	    memory_size,
 	    block_addresses,
-	    "memory_size":	bytes.length,
 	});
 
-	return new HoloHashes.HoloHash( response );
+	return new EntryHash( response );
     },
     async remember ( addr, options ) {
 	const opts			= Object.assign( {}, DEFAULT_OPTS, options );
-	const memory			= await this.functions.get_memory( addr );
+	const memory			= await this.functions.get_memory_entry( addr );
 
 	const bytes			= new Uint8Array( memory.memory_size );
 
 	let index			= 0;
 	for ( let block_addr of memory.block_addresses ) {
-	    const block			= await this.functions.get_memory_block( block_addr );
+	    const block			= await this.functions.get_memory_block_entry( block_addr );
 	    bytes.set( block.bytes, index );
 
 	    index		       += block.bytes.length;
 	}
 
-	return opts.compress
-	    ? gzip_js.unzip( bytes )
+	return (opts.compress || opts.decompress)
+	    ? gunzipSync( bytes )
 	    : bytes;
     }
 });
-MereMemoryZomelet.addTransformer( essence_transformer );
 
 
 export default {

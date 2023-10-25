@@ -3,6 +3,7 @@
 //! - Source code - [github.com/spartan-holochain-counsel/zome-mere-memory](https://github.com/spartan-holochain-counsel/zome-mere-memory)
 //! - Cargo package - [crates.io/crates/mere_memory_types](https://crates.io/crates/mere_memory_types)
 //!
+pub use hdi;
 
 use hdi::prelude::*;
 
@@ -14,13 +15,15 @@ use hdi::prelude::*;
 /// An Entry that represents a full byte-set by grouping a set of MemoryBlockEntry
 ///
 /// Example values
-/// ```ignore
+/// ```
+/// # use std::convert::TryFrom;
+/// # use holo_hash::{ EntryHash };
 /// use mere_memory_types::{ MemoryEntry };
 ///
 /// MemoryEntry {
-///     author: AgentPubKey::try_from("uhCAkNBaVvGRYmJUqsGNrfO8jC9Ij-t77QcmnAk3E3B8qh6TU09QN").unwrap(),
-///     published_at: 1628013738224,
 ///     hash: "bdff630d3f1c11ef".to_string(),
+///     compression: None,
+///     uncompressed_size: None,
 ///     memory_size: 712837,
 ///     block_addresses: vec![
 ///         EntryHash::try_from("uhCEkBh2fW3K2RE41X3MOO3LdrMUYPPXWPGtuDjwRrXQZk-94N7Ku").unwrap(),
@@ -30,9 +33,9 @@ use hdi::prelude::*;
 #[hdk_entry_helper]
 #[derive(Clone)]
 pub struct MemoryEntry {
-    pub author: AgentPubKey,
-    pub published_at: u64,
     pub hash: String,
+    pub compression: Option<String>,
+    pub uncompressed_size: Option<u64>,
     pub memory_size: u64,
     pub block_addresses: Vec<EntryHash>,
 }

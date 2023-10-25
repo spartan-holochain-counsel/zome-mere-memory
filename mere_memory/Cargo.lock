@@ -1171,7 +1171,6 @@ dependencies = [
 name = "mere_memory"
 version = "0.0.0"
 dependencies = [
- "hdi",
  "mere_memory_types",
 ]
 

@@ -6,6 +6,10 @@ import fs				from 'fs';
 import path				from 'path';
 import crypto				from 'crypto';
 import { expect }			from 'chai';
+import {
+    gzipSync,
+    zlibSync,
+}					from 'fflate';
 
 import { Holochain }			from '@spartan-hc/holochain-backdrop';
 import {
@@ -59,13 +63,15 @@ describe("Zome: Mere Memory", () => {
 
 
 function basic_tests () {
-    const bytes				= (new Uint8Array(3_000_000)).fill(1);
+    const bytes				= fs.readFileSync( MEMORY_PATH );
     const small_bytes			= crypto.randomBytes( 100 );
+
     let client;
     let app_client;
     let mere_memory_api;
     let memory;
     let memory_addr, memory_block_addr;
+    let compressed_memory_addr;
 
     before(async function () {
 	client				= new AppInterfaceClient( APP_PORT, {
@@ -74,11 +80,15 @@ function basic_tests () {
 	});
 	app_client			= await client.app( "test-alice" );
 
-	app_client.setCellZomelets( DNA_NAME, {
-	    "mere_memory_api": MereMemoryZomelet,
-	});
+	({
+	    memory,
+	}				= app_client.createInterface({
+	    [DNA_NAME]: {
+		"mere_memory_api":	MereMemoryZomelet,
+	    },
+	}));
 
-	mere_memory_api			= app_client.cells[DNA_NAME].zomes.mere_memory_api.functions;
+	mere_memory_api			= memory.zomes.mere_memory_api.functions;
     });
 
     it("should create a memory block", async function () {
@@ -91,7 +101,7 @@ function basic_tests () {
 	    },
 	    "bytes": small_bytes,
 	};
-	let addr			= await mere_memory_api.create_memory_block( input );
+	let addr			= await mere_memory_api.create_memory_block_entry( input );
 	log.normal("New memory block address: %s", addr );
 
 	memory_block_addr		= addr;
@@ -108,42 +118,71 @@ function basic_tests () {
 	    ],
 	    "memory_size": 100,
 	};
-	let addr			= await mere_memory_api.create_memory( input );
+	let addr			= await mere_memory_api.create_memory_entry( input );
 	log.normal("New memory address: %s", addr );
     });
 
     it("should create a memory using 'save'", async function () {
 	this.timeout( 10_000 );
 
+	memory_addr			= await mere_memory_api.save( bytes );
+	log.normal("New memory address: %s", memory_addr );
+    });
+
+    it("should create the same memory", async function () {
+	this.timeout( 20_000 );
+
 	let addr			= await mere_memory_api.save( bytes );
 	log.normal("New memory address: %s", addr );
 
-	memory_addr			= addr;
+	expect( addr			).to.deep.equal( memory_addr );
     });
 
     it("should get a memory", async function () {
 	this.timeout( 10_000 );
 
-	memory				= await mere_memory_api.get_memory( memory_addr );
+	memory				= await mere_memory_api.get_memory_entry( memory_addr );
 	log.normal("New memory: %s", json.debug(memory) );
     });
 
     it("should create a memory using 'save' with compress flag", async function () {
 	this.timeout( 10_000 );
 
-	let addr			= await mere_memory_api.save( bytes, {
+	compressed_memory_addr		= await mere_memory_api.save( bytes, {
 	    "compress": true,
 	});
-	let compressed_memory		= await mere_memory_api.get_memory( addr );
+	let compressed_memory		= await mere_memory_api.get_memory_entry( compressed_memory_addr );
 	log.normal("Compressed memory: %s", json.debug(compressed_memory) );
 
-	expect( memory.memory_size	).to.be.gt( compressed_memory.memory_size );
+	expect( compressed_memory.memory_size		).to.be.lt( memory.memory_size );
+	expect( compressed_memory.memory_size		).to.be.lt( compressed_memory.uncompressed_size );
+	expect( compressed_memory.uncompressed_size	).to.equal( bytes.length );
 
-	let result			= await mere_memory_api.remember( addr, {
-	    "compress": true,
+	let result			= await mere_memory_api.remember( compressed_memory_addr, {
+	    "decompress": true,
 	});
 
 	expect( result.length		).to.equal( bytes.length );
+    });
+
+    it("should create the same compressed memory", async function () {
+	this.timeout( 10_000 );
+
+	let addr			= await mere_memory_api.save( bytes, {
+	    "compress": true,
+	});
+	log.normal("New memory address: %s", addr );
+
+	expect( addr			).to.deep.equal( compressed_memory_addr );
+    });
+
+    it("should create the same memory and get the compressed memory", async function () {
+	this.timeout( 10_000 );
+
+	let addr			= await mere_memory_api.save( bytes );
+	log.normal("New memory address: %s", addr );
+
+	expect( addr			).to.deep.equal( compressed_memory_addr );
     });
 
     it("should get a memory using 'remember'", async function () {
@@ -160,7 +199,7 @@ function basic_tests () {
 	    const exists		= await mere_memory_api.memory_exists( bytes );
 	    log.normal("Memory exists: %s", exists );
 
-	    expect( exists		).to.be.true;
+	    expect( exists		).to.have.length( 2 );
 	}
 
 	{
@@ -171,13 +210,51 @@ function basic_tests () {
 	}
     });
 
+    it("should create a compressed memory using custom compression", async function () {
+	this.timeout( 10_000 );
+
+	let addr			= await mere_memory_api.save( bytes, {
+	    compress ( source ) {
+		return {
+		    "type": "zlib",
+		    "bytes": zlibSync( source ),
+		};
+	    },
+	    "check_existing_memories": false,
+	});
+
+	expect( addr			).to.not.deep.equal( compressed_memory_addr );
+    });
+
+    it("should get existing compressed memory with lowest memory size", async function () {
+	this.timeout( 10_000 );
+
+	let addr			= await mere_memory_api.save( bytes, {
+	    compress ( source ) {
+		return {
+		    "type": "gzip",
+		    "bytes": gzipSync( source, {
+			"level": 0,
+		    }),
+		};
+	    },
+	    "check_existing_memories": false,
+	});
+
+	let existing_addr		= await mere_memory_api.save( bytes, {
+	    "compress": true,
+	});
+
+	expect( existing_addr		).to.not.deep.equal( addr );
+    });
+
     describe("Errors", () => {
 	it("should fail to create memory block because it is too big", async function () {
 	    this.timeout( 10_000 );
 
 	    await expect_reject( async () => {
 		const chunk		= new Uint8Array( 2_097_153 ).fill(0);
-		const block_addr	= await app_client.call( "memory", "mere_memory_api", "create_memory_block", {
+		const block_addr	= await app_client.call( "memory", "mere_memory_api", "create_memory_block_entry", {
 		    "sequence": {
 			"position": 1,
 			"length": 1,
@@ -192,14 +269,14 @@ function basic_tests () {
 
 	    await expect_reject( async () => {
 		const chunk		= crypto.randomBytes( 64 );
-		const block_addr	= await mere_memory_api.create_memory_block({
+		const block_addr	= await mere_memory_api.create_memory_block_entry({
 		    "sequence": {
 			"position": 1,
 			"length": 1,
 		    },
 		    "bytes": chunk,
 		});
-		await app_client.call( "memory", "mere_memory_api", "create_memory", {
+		await app_client.call( "memory", "mere_memory_api", "create_memory_entry", {
 		    "hash":		await mere_memory_api.calculate_hash( chunk ),
 		    "block_addresses": [ block_addr ],
 		    "memory_size":	65,

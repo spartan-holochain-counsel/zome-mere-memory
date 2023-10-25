@@ -1,8 +1,7 @@
-.cargo
-.hc
-target
+/.cargo
+/target
 *.happ
 *.dna
-tests/node_modules
-zomelets/dist
-zomelets/node_modules
+/tests/node_modules
+/zomelets/dist
+/zomelets/node_modules

@@ -52,11 +52,11 @@ import { MereMemoryZomelet } from '@spartan-hc/mere-memory-zomelets';
 const client = new AppInterfaceClient( APP_PORT );
 const app_client = await client.app( APP_ID );
 
-app_client.setCellInterface( DNA_NAME, {
+const cell = app_client.createCellInterface( DNA_NAME, {
     "mere_memory_api": MereMemoryZomelet,
 });
 
-const mere_memory = app_client.cells[ DNA_NAME ].zomes.mere_memory_api.functions;
+const mere_memory = cell.zomes.mere_memory_api.functions;
 
 let addr = await mere_memory.save( bytes );
 // EntryHash
@@ -83,7 +83,7 @@ For information on which versions of this package work for each Holochain releas
 See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 
-### Mere Memory Types Crate
+## Mere Memory Types Crate
 See [mere_memory_types/README.md](mere_memory_types/README.md)
 
 

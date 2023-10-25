@@ -13,5 +13,4 @@ name = "mere_memory"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-hdi = "=0.3.2"
 mere_memory_types = {path = "../mere_memory_types"}

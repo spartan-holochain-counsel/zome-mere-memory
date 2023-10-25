@@ -31,33 +31,18 @@ $(STORAGE_APP):			$(STORAGE_DNA) packs/app/happ.yaml
 $(STORAGE_APP_CLONABLE):	$(STORAGE_DNA) packs/app_clonable/happ.yaml
 	hc app pack packs/app_clonable/
 
-use-local-holo-hash:
-	cd tests; npm uninstall @spartan-hc/holo-hash
-	cd tests; npm install --save-dev ../../holo-hash-js/
-use-npm-holo-hash:
-	cd tests; npm uninstall @spartan-hc/holo-hash
-	cd tests; npm install --save-dev @spartan-hc/holo-hash
-use-local-backdrop:
-	cd tests; npm uninstall @spartan-hc/holochain-backdrop
-	cd tests; npm install --save-dev ../../node-holochain-backdrop
-use-npm-backdrop:
-	cd tests; npm uninstall @spartan-hc/holochain-backdrop
-	cd tests; npm install --save-dev @spartan-hc/holochain-backdrop
-use-local-client:
-	cd tests; npm uninstall @whi/holochain-client
-	cd tests; npm install --save-dev ../../holochain-client-js
-use-npm-client:
-	cd tests; npm uninstall @whi/holochain-client
-	cd tests; npm install --save-dev @whi/holochain-client
-use-local-crux:
-	cd tests; npm uninstall @whi/crux-payload-parser
-	cd tests; npm install --save-dev ../../js-crux-payload-parser
-use-npm-crux:
-	cd tests; npm uninstall @whi/crux-payload-parser
-	cd tests; npm install --save-dev @whi/crux-payload-parser
-
-use-local:		use-local-holochain-client use-local-holochain-backdrop
-use-npm:		  use-npm-holochain-client   use-npm-holochain-backdrop
+npm-reinstall-local:
+	cd tests; npm uninstall $(NPM_PACKAGE); npm i --save $(LOCAL_PATH)
+npm-reinstall-public:
+	cd tests; npm uninstall $(NPM_PACKAGE); npm i --save $(NPM_PACKAGE)
+npm-use-app-interface-client-public:
+npm-use-app-interface-client-local:
+npm-use-app-interface-client-%:
+	NPM_PACKAGE=@spartan-hc/app-interface-client LOCAL_PATH=../../app-interface-client-js make npm-reinstall-$*
+npm-use-backdrop-public:
+npm-use-backdrop-local:
+npm-use-backdrop-%:
+	NPM_PACKAGE=@spartan-hc/holochain-backdrop LOCAL_PATH=../../node-holochain-backdrop make npm-reinstall-$*
 
 
 
@@ -82,7 +67,7 @@ tests/node_modules:		tests/package-lock.json
 	cd tests; npm install
 	touch $@
 test:			$(STORAGE_APP) tests/node_modules
-	cd tests; LOG_LEVEL=warn npx mocha integration/test_api.js
+	cd tests; LOG_LEVEL=fatal npx mocha integration/test_api.js
 test-debug:		$(STORAGE_APP) tests/node_modules
 	cd tests; LOG_LEVEL=trace npx mocha integration/test_api.js
 
