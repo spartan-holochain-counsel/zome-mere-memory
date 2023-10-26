@@ -61,14 +61,15 @@ publish-crate:			test-debug .cargo/credentials
 #
 # Testing
 #
-tests/package-lock.json:	tests/package.json
+%/package-lock.json:	%/package.json
 	touch $@
-tests/node_modules:		tests/package-lock.json
-	cd tests; npm install
+%/node_modules:		%/package-lock.json
+	cd $*; npm install
 	touch $@
-test:			$(STORAGE_APP) tests/node_modules
+
+test:			$(STORAGE_APP) tests/node_modules zomelets/node_modules
 	cd tests; LOG_LEVEL=fatal npx mocha integration/test_api.js
-test-debug:		$(STORAGE_APP) tests/node_modules
+test-debug:		$(STORAGE_APP) tests/node_modules zomelets/node_modules
 	cd tests; LOG_LEVEL=trace npx mocha integration/test_api.js
 
 
@@ -115,7 +116,7 @@ clean-files-all-force:	clean-remove-chaff
 #
 # NPM packaging
 #
-prepare-zomelets-package:
+prepare-zomelets-package:	zomelets/node_modules
 	cd zomelets; rm -f dist/*
 	cd zomelets; npx webpack
 	cd zomelets; MODE=production npx webpack
