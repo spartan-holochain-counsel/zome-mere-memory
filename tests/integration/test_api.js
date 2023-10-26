@@ -9,6 +9,7 @@ import { expect }			from 'chai';
 import {
     gzipSync,
     zlibSync,
+    unzlibSync,
 }					from 'fflate';
 
 import { Holochain }			from '@spartan-hc/holochain-backdrop';
@@ -45,11 +46,6 @@ describe("Zome: Mere Memory", () => {
 	}, {
 	    "app_port": APP_PORT,
 	});
-
-	const cell			= actors.alice.test.cells[ DNA_NAME ];
-	await holochain.admin.grantUnrestrictedCapability(
-	    "testing", cell.agent, cell.dna, "*"
-	);
     });
 
     linearSuite("Basic", basic_tests.bind( this, holochain ) );
@@ -72,11 +68,13 @@ function basic_tests () {
     let memory;
     let memory_addr, memory_block_addr;
     let compressed_memory_addr;
+    let zlib_addr;
 
     before(async function () {
+	this.timeout( 30_000 );
+
 	client				= new AppInterfaceClient( APP_PORT, {
 	    "logging": process.env.LOG_LEVEL || "fatal",
-	    // "logging": "normal",
 	});
 	app_client			= await client.app( "test-alice" );
 
@@ -89,11 +87,11 @@ function basic_tests () {
 	}));
 
 	mere_memory_api			= memory.zomes.mere_memory_api.functions;
+
+	await mere_memory_api.make_hash_path( "trigger init" );
     });
 
     it("should create a memory block", async function () {
-	this.timeout( 10_000 );
-
 	let input			= {
 	    "sequence": {
 		"position": 1,
@@ -108,8 +106,6 @@ function basic_tests () {
     });
 
     it("should create a memory", async function () {
-	this.timeout( 10_000 );
-
 	let hash			= await mere_memory_api.calculate_hash( small_bytes );
 	let input			= {
 	    hash,
@@ -122,35 +118,35 @@ function basic_tests () {
 	log.normal("New memory address: %s", addr );
     });
 
-    it("should create a memory using 'save'", async function () {
-	this.timeout( 10_000 );
-
-	memory_addr			= await mere_memory_api.save( bytes );
+    it("should save (uncompressed) memory", async function () {
+	memory_addr			= await mere_memory_api.save( bytes, {
+	    "compress": false,
+	});
 	log.normal("New memory address: %s", memory_addr );
     });
 
     it("should create the same memory", async function () {
-	this.timeout( 20_000 );
-
-	let addr			= await mere_memory_api.save( bytes );
+	let addr			= await mere_memory_api.save( bytes, {
+	    "compress": false,
+	} );
 	log.normal("New memory address: %s", addr );
 
 	expect( addr			).to.deep.equal( memory_addr );
     });
 
-    it("should get a memory", async function () {
-	this.timeout( 10_000 );
+    it("should remember (uncompressed) memory", async function () {
+	let result			= await mere_memory_api.remember( memory_addr );
 
+	expect( result			).to.deep.equal( bytes );
+    });
+
+    it("should get a memory", async function () {
 	memory				= await mere_memory_api.get_memory_entry( memory_addr );
 	log.normal("New memory: %s", json.debug(memory) );
     });
 
-    it("should create a memory using 'save' with compress flag", async function () {
-	this.timeout( 10_000 );
-
-	compressed_memory_addr		= await mere_memory_api.save( bytes, {
-	    "compress": true,
-	});
+    it("should create a memory using 'save' (compressed)", async function () {
+	compressed_memory_addr		= await mere_memory_api.save( bytes );
 	let compressed_memory		= await mere_memory_api.get_memory_entry( compressed_memory_addr );
 	log.normal("Compressed memory: %s", json.debug(compressed_memory) );
 
@@ -158,27 +154,19 @@ function basic_tests () {
 	expect( compressed_memory.memory_size		).to.be.lt( compressed_memory.uncompressed_size );
 	expect( compressed_memory.uncompressed_size	).to.equal( bytes.length );
 
-	let result			= await mere_memory_api.remember( compressed_memory_addr, {
-	    "decompress": true,
-	});
+	let result			= await mere_memory_api.remember( compressed_memory_addr );
 
 	expect( result.length		).to.equal( bytes.length );
     });
 
     it("should create the same compressed memory", async function () {
-	this.timeout( 10_000 );
-
-	let addr			= await mere_memory_api.save( bytes, {
-	    "compress": true,
-	});
+	let addr			= await mere_memory_api.save( bytes );
 	log.normal("New memory address: %s", addr );
 
 	expect( addr			).to.deep.equal( compressed_memory_addr );
     });
 
     it("should create the same memory and get the compressed memory", async function () {
-	this.timeout( 10_000 );
-
 	let addr			= await mere_memory_api.save( bytes );
 	log.normal("New memory address: %s", addr );
 
@@ -186,15 +174,11 @@ function basic_tests () {
     });
 
     it("should get a memory using 'remember'", async function () {
-	this.timeout( 10_000 );
-
 	const memory			= await mere_memory_api.remember( memory_addr );
 	log.normal("Memory: %s", json.debug(memory) );
     });
 
     it("should find a memory based on the hash", async function () {
-	this.timeout( 10_000 );
-
 	{
 	    const exists		= await mere_memory_api.memory_exists( bytes );
 	    log.normal("Memory exists: %s", exists );
@@ -211,9 +195,7 @@ function basic_tests () {
     });
 
     it("should create a compressed memory using custom compression", async function () {
-	this.timeout( 10_000 );
-
-	let addr			= await mere_memory_api.save( bytes, {
+	zlib_addr			= await mere_memory_api.save( bytes, {
 	    compress ( source ) {
 		return {
 		    "type": "zlib",
@@ -223,12 +205,18 @@ function basic_tests () {
 	    "check_existing_memories": false,
 	});
 
-	expect( addr			).to.not.deep.equal( compressed_memory_addr );
+	expect( zlib_addr		).to.not.deep.equal( compressed_memory_addr );
+
+	let result			= await mere_memory_api.remember( zlib_addr, {
+	    decompress ( bytes ) {
+		return unzlibSync( bytes );
+	    },
+	});
+
+	expect( result			).to.deep.equal( bytes );
     });
 
     it("should get existing compressed memory with lowest memory size", async function () {
-	this.timeout( 10_000 );
-
 	let addr			= await mere_memory_api.save( bytes, {
 	    compress ( source ) {
 		return {
@@ -241,17 +229,13 @@ function basic_tests () {
 	    "check_existing_memories": false,
 	});
 
-	let existing_addr		= await mere_memory_api.save( bytes, {
-	    "compress": true,
-	});
+	let existing_addr		= await mere_memory_api.save( bytes );
 
 	expect( existing_addr		).to.not.deep.equal( addr );
     });
 
     describe("Errors", () => {
 	it("should fail to create memory block because it is too big", async function () {
-	    this.timeout( 10_000 );
-
 	    await expect_reject( async () => {
 		const chunk		= new Uint8Array( 2_097_153 ).fill(0);
 		const block_addr	= await app_client.call( "memory", "mere_memory_api", "create_memory_block_entry", {
@@ -265,8 +249,6 @@ function basic_tests () {
 	});
 
 	it("should fail to create memory with wrong byte size", async function () {
-	    this.timeout( 10_000 );
-
 	    await expect_reject( async () => {
 		const chunk		= crypto.randomBytes( 64 );
 		const block_addr	= await mere_memory_api.create_memory_block_entry({
@@ -282,6 +264,12 @@ function basic_tests () {
 		    "memory_size":	65,
 		});
 	    }, "InvalidCommit error: MemoryEntry 'memory_size' does not equal the sum of its blocks" );
+	});
+
+	it("should fail remember custom compression without decompress option", async function () {
+	    await expect_reject( async () => {
+		await mere_memory_api.remember( zlib_addr );
+	    }, "Cannot decompress memory with compression type 'zlib'" );
 	});
     });
 

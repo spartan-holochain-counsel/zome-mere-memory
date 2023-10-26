@@ -74,12 +74,14 @@ export class Chunker {
 
 
 const DEFAULT_OPTS			= {
-    "compress": false,
-    "decompress": false,
+    "compress": true,
+    "decompress": true,
     "check_existing_memories": true,
 };
 
 export const MereMemoryZomelet		= new Zomelet({
+    "make_hash_path": true,
+
     // Memory Block CRUD
     "create_memory_block_entry": true,
     "get_memory_block_entry": true,
@@ -251,6 +253,9 @@ export const MereMemoryZomelet		= new Zomelet({
 	const opts			= Object.assign( {}, DEFAULT_OPTS, options );
 	const memory			= await this.functions.get_memory_entry( addr );
 
+	if ( ![ null, "gzip" ].includes( memory.compression ) && typeof options.decompress !== "function" )
+	    throw new Error(`Cannot decompress memory with compression type '${memory.compression}' unless custom decompress is provided`);
+
 	const bytes			= new Uint8Array( memory.memory_size );
 
 	let index			= 0;
@@ -261,9 +266,13 @@ export const MereMemoryZomelet		= new Zomelet({
 	    index		       += block.bytes.length;
 	}
 
-	return (opts.compress || opts.decompress)
-	    ? gunzipSync( bytes )
-	    : bytes;
+	if ( memory.compression === null )
+	    return bytes;
+
+	if ( memory.compression !== "gzip" )
+	    return await options.decompress( bytes );
+
+	return gunzipSync( bytes );
     }
 });
 
