@@ -49,8 +49,8 @@ jobs:
       - name: Print PATH Variable
         run: echo $PATH
 
-      - name: List available binaries
-        run: find $(echo $PATH | tr ':' ' ') -type f -executable -exec basename {} \;
+      - name: Check binaries permissions
+        run: ls -l /opt/hostedtoolcache/hc/0.2.2/x64/hc
 
       - name: Print HC version
         run: hc --version
