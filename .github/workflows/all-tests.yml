@@ -25,26 +25,29 @@ jobs:
         run: |
           curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh -s -- -y
 
-      - name: Set up Holochain
+      - name: Holochain Setup
         uses: supplypike/setup-bin@v3
         with:
           name: holochain
           version: "0.2.2"
           uri: https://github.com/spartan-holochain-counsel/holochain-nix-shell-configs/releases/download/holochain-0.2.2/holochain-0.2.2
 
-      - name: Set up Lair Keystore
+      - name: Lair Keystore Setup
         uses: supplypike/setup-bin@v3
         with:
           name: lair-keystore
           version: "0.3.0"
           uri: https://github.com/spartan-holochain-counsel/holochain-nix-shell-configs/releases/download/holochain-0.2.2/lair-keystore-0.3.0
 
-      - name: Set up HC
+      - name: Holochain CLI Setup
         uses: supplypike/setup-bin@v3
         with:
           name: hc
           version: "0.2.2"
           uri: https://github.com/spartan-holochain-counsel/holochain-nix-shell-configs/releases/download/holochain-0.2.2/hc-0.2.2
+
+      - name: Print PATH Variable
+        run: echo $PATH
 
       - name: Run Tests
         run: make test-debug
