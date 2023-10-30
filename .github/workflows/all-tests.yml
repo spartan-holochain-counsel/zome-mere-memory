@@ -55,5 +55,13 @@ jobs:
           sudo mkdir -p ${{ env.NIX_STORE_PATH }}
           sudo ln -s /lib64/ld-linux-x86-64.so.2 ${{ env.NIX_STORE_PATH }}
 
+      - name: Build Packages
+        run: make build
+
       - name: Run Tests
-        run: make test-debug
+        run: |
+          output=$(make test-debug | tee >(cat >&2))
+          passing=$(echo "$output" | grep -oP '\d+ passing' | grep -oP '\d+' || echo 0)
+          failing=$(echo "$output" | grep -oP '\d+ failing' | grep -oP '\d+' || echo 0)
+          pending=$(echo "$output" | grep -oP '\d+ pending' | grep -oP '\d+' || echo 0)
+          echo "Passed: $passing | Failed: $failing | Pending: $pending" >> $GITHUB_STEP_SUMMARY
