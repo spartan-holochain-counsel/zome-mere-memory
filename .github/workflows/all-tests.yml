@@ -67,6 +67,9 @@ jobs:
       - name: Create expected nix dir
         run: sudo mkdir -p /nix/store/ld03l52xq2ssn4x0g5asypsxqls40497-glibc-2.37-8/lib/
 
+      - name: Create link to expected nix dependency
+        run: sudo ln -s /lib64/ld-linux-x86-64.so.2 /nix/store/ld03l52xq2ssn4x0g5asypsxqls40497-glibc-2.37-8/lib/ld-linux-x86-64.so.2
+
       - name: Print HC version
         run: hc --version
 
