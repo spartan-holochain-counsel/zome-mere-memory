@@ -49,8 +49,17 @@ jobs:
       - name: Print PATH Variable
         run: echo $PATH
 
+      - name: Print LD_LIBRARY_PATH
+        run: echo $LD_LIBRARY_PATH
+
+      - name: List LD_LIBRARY_PATH
+        run: ls -la $LD_LIBRARY_PATH
+
       - name: Check binaries permissions
         run: ls -l /opt/hostedtoolcache/hc/0.2.2/x64/hc
+
+      - name: Check symlinks
+        run: ldd /opt/hostedtoolcache/hc/0.2.2/x64/hc
 
       - name: Print HC version
         run: hc --version
