@@ -52,5 +52,14 @@ jobs:
       - name: List available binaries
         run: find $(echo $PATH | tr ':' ' ') -type f -executable -exec basename {} \;
 
+      - name: Print HC version
+        run: hc --version
+
+      - name: Print Holochain version
+        run: holochain --version
+
+      - name: Print Lair version
+        run: lair-keystore --version
+
       # - name: Run Tests
       #   run: make test-debug
