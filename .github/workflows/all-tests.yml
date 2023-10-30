@@ -55,11 +55,17 @@ jobs:
       - name: List LD_LIBRARY_PATH
         run: ls -la $LD_LIBRARY_PATH
 
+      - name: List /lib64
+        run: ls -la /lib64
+
       - name: Check binaries permissions
         run: ls -l /opt/hostedtoolcache/hc/0.2.2/x64/hc
 
       - name: Check symlinks
         run: ldd /opt/hostedtoolcache/hc/0.2.2/x64/hc
+
+      - name: Create expected nix dir
+        run: mkdir -p /nix/store/ld03l52xq2ssn4x0g5asypsxqls40497-glibc-2.37-8/lib/
 
       - name: Print HC version
         run: hc --version
