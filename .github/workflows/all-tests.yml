@@ -64,4 +64,8 @@ jobs:
           passing=$(echo "$output" | grep -oP '\d+ passing' | grep -oP '\d+' || echo 0)
           failing=$(echo "$output" | grep -oP '\d+ failing' | grep -oP '\d+' || echo 0)
           pending=$(echo "$output" | grep -oP '\d+ pending' | grep -oP '\d+' || echo 0)
-          echo "Passed: $passing | Failed: $failing | Pending: $pending" >> $GITHUB_STEP_SUMMARY
+          echo "## Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Passed   | Failed   | Pending  |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|----------|----------|" >> $GITHUB_STEP_SUMMARY
+          echo "| $passing | $failing | $pending |" >> $GITHUB_STEP_SUMMARY
