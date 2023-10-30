@@ -39,5 +39,12 @@ jobs:
           version: "0.3.0"
           uri: https://github.com/spartan-holochain-counsel/holochain-nix-shell-configs/releases/download/holochain-0.2.2/lair-keystore-0.3.0
 
+      - name: Set up HC
+        uses: supplypike/setup-bin@v3
+        with:
+          name: hc
+          version: "0.2.2"
+          uri: https://github.com/spartan-holochain-counsel/holochain-nix-shell-configs/releases/download/holochain-0.2.2/hc-0.2.2
+
       - name: Run Tests
         run: make test-debug
