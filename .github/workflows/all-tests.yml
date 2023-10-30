@@ -46,38 +46,11 @@ jobs:
           version: "0.2.2"
           uri: https://github.com/spartan-holochain-counsel/holochain-nix-shell-configs/releases/download/holochain-0.2.2/hc-0.2.2
 
-      - name: Print PATH Variable
-        run: echo $PATH
-
-      - name: Print LD_LIBRARY_PATH
-        run: echo $LD_LIBRARY_PATH
-
-      - name: List LD_LIBRARY_PATH
-        run: ls -la $LD_LIBRARY_PATH
-
-      - name: List /lib64
-        run: ls -la /lib64/*
-
-      - name: Check binaries permissions
-        run: ls -l /opt/hostedtoolcache/hc/0.2.2/x64/hc
-
-      - name: Check symlinks
-        run: ldd /opt/hostedtoolcache/hc/0.2.2/x64/hc
-
       - name: Create expected nix dir
         run: sudo mkdir -p /nix/store/ld03l52xq2ssn4x0g5asypsxqls40497-glibc-2.37-8/lib/
 
       - name: Create link to expected nix dependency
         run: sudo ln -s /lib64/ld-linux-x86-64.so.2 /nix/store/ld03l52xq2ssn4x0g5asypsxqls40497-glibc-2.37-8/lib/ld-linux-x86-64.so.2
 
-      - name: Print HC version
-        run: hc --version
-
-      - name: Print Holochain version
-        run: holochain --version
-
-      - name: Print Lair version
-        run: lair-keystore --version
-
-      # - name: Run Tests
-      #   run: make test-debug
+      - name: Run Tests
+        run: make test-debug
