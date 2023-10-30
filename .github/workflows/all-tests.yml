@@ -1,0 +1,31 @@
+name: All Tests
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Holochain
+        uses: supplypike/setup-bin@v3
+        with:
+          asset-name: holochain
+          github-repository: spartan-holochain-counsel/holochain-nix-shell-configs
+          asset-url: https://github.com/spartan-holochain-counsel/holochain-nix-shell-configs/releases/download/holochain-0.2.2/holochain-0.2.2
+
+      - name: Set up Lair Keystore
+        uses: supplypike/setup-bin@v3
+        with:
+          asset-name: lair-keystore
+          github-repository: spartan-holochain-counsel/holochain-nix-shell-configs
+          asset-url: https://github.com/spartan-holochain-counsel/holochain-nix-shell-configs/releases/download/holochain-0.2.2/lair-keystore-0.3.0
+
+      - name: Run Tests
+        run: make test-debug
