@@ -1,13 +1,17 @@
 name: All Tests
 
 on:
+  push:
+    branches:
+      - master
+      - develop
   pull_request:
     branches:
       - master
 
 env:
   RUST_VERSION: 1.71.1
-  RELEASE_VERSION: holochain-0.2.2
+  RELEASE_TAG: holochain-0.2.2
   HOLOCHAIN_VERSION: 0.2.2
   LAIR_KEYSTORE_VERSION: 0.3.0
   HC_VERSION: 0.2.2
@@ -19,7 +23,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Rust
         uses: actions-rs/toolchain@v1
@@ -34,21 +38,21 @@ jobs:
         with:
           name: holochain
           version: "${{ env.HOLOCHAIN_VERSION }}"
-          uri: https://github.com/spartan-holochain-counsel/holochain-nix-shell-configs/releases/download/${{ env.RELEASE_VERSION }}/holochain-${{ env.HOLOCHAIN_VERSION }}
+          uri: https://github.com/spartan-holochain-counsel/holochain-nix-shell-configs/releases/download/${{ env.RELEASE_TAG }}/holochain-${{ env.HOLOCHAIN_VERSION }}
 
       - name: Lair Keystore Setup
         uses: supplypike/setup-bin@v3
         with:
           name: lair-keystore
           version: "${{ env.LAIR_KEYSTORE_VERSION }}"
-          uri: https://github.com/spartan-holochain-counsel/holochain-nix-shell-configs/releases/download/${{ env.RELEASE_VERSION }}/lair-keystore-${{ env.LAIR_KEYSTORE_VERSION }}
+          uri: https://github.com/spartan-holochain-counsel/holochain-nix-shell-configs/releases/download/${{ env.RELEASE_TAG }}/lair-keystore-${{ env.LAIR_KEYSTORE_VERSION }}
 
       - name: Holochain CLI Setup
         uses: supplypike/setup-bin@v3
         with:
           name: hc
           version: "${{ env.HC_VERSION }}"
-          uri: https://github.com/spartan-holochain-counsel/holochain-nix-shell-configs/releases/download/${{ env.RELEASE_VERSION }}/hc-${{ env.HC_VERSION }}
+          uri: https://github.com/spartan-holochain-counsel/holochain-nix-shell-configs/releases/download/${{ env.RELEASE_TAG }}/hc-${{ env.HC_VERSION }}
 
       - name: Create expected symlink in nix path dependency
         run: |
