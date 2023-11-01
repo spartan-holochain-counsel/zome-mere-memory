@@ -26,12 +26,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ env.RUST_VERSION }}
-
-      - name: Add wasm32-unknown-unknown target
-        run: rustup target add wasm32-unknown-unknown
+          targets: wasm32-unknown-unknown
 
       - name: Holochain Setup
         uses: supplypike/setup-bin@v3
