@@ -21,8 +21,8 @@
     "url": "https://github.com/spartan-holochain-counsel/zome-mere-memory/"
   },
   "dependencies": {
-    "@spartan-hc/holo-hash": "^0.5.4",
-    "@spartan-hc/zomelets": "^0.1.2",
+    "@spartan-hc/holo-hash": "^0.6.1",
+    "@spartan-hc/zomelets": "^0.2.0",
     "fflate": "^0.8.1",
     "js-sha256": "^0.10.1"
   },

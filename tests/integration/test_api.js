@@ -26,9 +26,9 @@ import { expect_reject,
 
 const delay				= (n) => new Promise(f => setTimeout(f, n));
 const MEMORY_PATH			= new URL( "../../packs/dna/storage.dna", import.meta.url ).pathname;
-const APP_PORT				= 23_567;
 const DNA_NAME				= "memory";
 
+let client;
 
 describe("Zome: Mere Memory", () => {
     const holochain			= new Holochain({
@@ -39,19 +39,22 @@ describe("Zome: Mere Memory", () => {
     before(async function () {
 	this.timeout( 30_000 );
 
-	const actors			= await holochain.backdrop({
+	await holochain.backdrop({
 	    "test": {
 		[DNA_NAME]:	MEMORY_PATH,
 	    },
-	}, {
-	    "app_port": APP_PORT,
+	});
+
+	const app_port			= await holochain.appPorts()[0];
+
+	client				= new AppInterfaceClient( app_port, {
+	    "logging": process.env.LOG_LEVEL || "fatal",
 	});
     });
 
     linearSuite("Basic", basic_tests.bind( this, holochain ) );
 
     after(async () => {
-	await holochain.stop();
 	await holochain.destroy();
     });
 
@@ -62,7 +65,6 @@ function basic_tests () {
     const bytes				= fs.readFileSync( MEMORY_PATH );
     const small_bytes			= crypto.randomBytes( 100 );
 
-    let client;
     let app_client;
     let mere_memory_api;
     let memory;
@@ -73,9 +75,6 @@ function basic_tests () {
     before(async function () {
 	this.timeout( 30_000 );
 
-	client				= new AppInterfaceClient( APP_PORT, {
-	    "logging": process.env.LOG_LEVEL || "fatal",
-	});
 	app_client			= await client.app( "test-alice" );
 
 	({

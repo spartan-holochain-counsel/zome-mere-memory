@@ -40,6 +40,10 @@ npm-use-backdrop-public:
 npm-use-backdrop-local:
 npm-use-backdrop-%:
 	NPM_PACKAGE=@spartan-hc/holochain-backdrop LOCAL_PATH=../../node-holochain-backdrop make npm-reinstall-$*
+npm-use-holo-hash-public:
+npm-use-holo-hash-local:
+npm-use-holo-hash-%:
+	NPM_PACKAGE=@spartan-hc/holo-hash LOCAL_PATH=../../holo-hash-js make npm-reinstall-$*
 
 
 #

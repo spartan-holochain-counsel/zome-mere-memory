@@ -110,7 +110,7 @@ fn validate_record(entry_type: EntryTypes, record: &Record) -> ExternResult<Vali
 //
 // Memory
 //
-fn validate_memory_create(_action: &action::Create, memory: MemoryEntry) -> ExternResult<ValidateCallbackResult> {
+fn validate_memory_create(_action: &Create, memory: MemoryEntry) -> ExternResult<ValidateCallbackResult> {
     let mut block_sum : u64 = 0;
 
     for block_addr in memory.block_addresses {
@@ -126,11 +126,11 @@ fn validate_memory_create(_action: &action::Create, memory: MemoryEntry) -> Exte
     }
 }
 
-fn validate_memory_update(_action: &action::Update, _memory: MemoryEntry) -> ExternResult<ValidateCallbackResult> {
+fn validate_memory_update(_action: &Update, _memory: MemoryEntry) -> ExternResult<ValidateCallbackResult> {
     Ok(ValidateCallbackResult::Invalid(format!("Memory entries cannot be updated")))
 }
 
-fn validate_memory_delete(_action: &action::Delete) -> ExternResult<ValidateCallbackResult> {
+fn validate_memory_delete(_action: &Delete) -> ExternResult<ValidateCallbackResult> {
     Ok(ValidateCallbackResult::Invalid(format!("Memory entries cannot be deleted")))
 }
 
@@ -139,7 +139,7 @@ fn validate_memory_delete(_action: &action::Delete) -> ExternResult<ValidateCall
 //
 // Memory Block
 //
-fn validate_memory_block_create(_action: &action::Create, memory_block: MemoryBlockEntry) -> ExternResult<ValidateCallbackResult> {
+fn validate_memory_block_create(_action: &Create, memory_block: MemoryBlockEntry) -> ExternResult<ValidateCallbackResult> {
     if memory_block.bytes.len() > 2_097_152 {
 	return Ok(ValidateCallbackResult::Invalid("MemoryBlockEntry cannot be larger than 2MB (2,097,152 bytes)".to_string()));
     }
@@ -148,10 +148,10 @@ fn validate_memory_block_create(_action: &action::Create, memory_block: MemoryBl
     }
 }
 
-fn validate_memory_block_update(_action: &action::Update, _memory_block: MemoryBlockEntry) -> ExternResult<ValidateCallbackResult> {
+fn validate_memory_block_update(_action: &Update, _memory_block: MemoryBlockEntry) -> ExternResult<ValidateCallbackResult> {
     Ok(ValidateCallbackResult::Invalid(format!("MemoryBlock entries cannot be updated")))
 }
 
-fn validate_memory_block_delete(_action: &action::Delete) -> ExternResult<ValidateCallbackResult> {
+fn validate_memory_block_delete(_action: &Delete) -> ExternResult<ValidateCallbackResult> {
     Ok(ValidateCallbackResult::Invalid(format!("MemoryBlock entries cannot be deleted")))
 }

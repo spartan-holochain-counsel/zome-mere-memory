@@ -12,7 +12,12 @@ use hdk::prelude::*;
 fn memory_exists(hash: String) -> ExternResult<Option<Vec<EntryHash>>> {
     let path = make_hash_path( hash )?;
 
-    let links = get_links( path.path_entry_hash()?, LinkTypes::ByHash, None )?;
+    let links = get_links(
+        GetLinksInputBuilder::try_new(
+            path.path_entry_hash()?,
+            LinkTypes::ByHash,
+        )?.build()
+    )?;
 
     Ok(
         match links.len() {
@@ -62,7 +67,12 @@ fn get_memory_entries_for_agent(maybe_agent_id: Option<AgentPubKey>) -> ExternRe
         Some(agent_id) => agent_id,
         None => agent_info()?.agent_initial_pubkey,
     };
-    let memories = get_links( agent_id, LinkTypes::Memory, None )?.into_iter()
+    let memories = get_links(
+        GetLinksInputBuilder::try_new(
+            agent_id,
+            LinkTypes::Memory,
+        )?.build()
+    )?.into_iter()
         .filter_map(|link| {
             let addr = link.target.into_entry_hash()?;
             get_memory_entry( addr ).ok()
