@@ -61,10 +61,18 @@ jobs:
         run: |
           ldd --version
 
-      - name: Upgrade glib
+      - name: Upgrade
         run: |
           sudo apt-get update
-          sudo apt-get install libc6
+          sudo apt-get -y upgrade
+
+      - name: Check glib version
+        run: |
+          ldd --version
+
+      - name: Upgrade dist
+        run: |
+          sudo apt-get -y dist-upgrade
 
       - name: Check glib version
         run: |
