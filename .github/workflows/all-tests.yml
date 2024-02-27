@@ -61,6 +61,15 @@ jobs:
         run: |
           ldd --version
 
+      - name: Upgrade glib
+        run: |
+          sudo apt-get update
+          sudo apt-get install libc6
+
+      - name: Check glib version
+        run: |
+          ldd --version
+
       - name: Test binaries
         run: |
           hc --version
