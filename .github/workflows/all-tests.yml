@@ -57,6 +57,16 @@ jobs:
           sudo mkdir -p ${{ env.NIX_STORE_PATH }}
           sudo ln -s /lib64/ld-linux-x86-64.so.2 ${{ env.NIX_STORE_PATH }}
 
+      - name: Check glib version
+        run: |
+          ldd --version
+
+      - name: Test binaries
+        run: |
+          hc --version
+          holochain --version
+          lair-keystore --version
+
       - name: Build Packages
         run: make build
 
