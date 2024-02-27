@@ -10,12 +10,12 @@ on:
       - master
 
 env:
-  RUST_VERSION: 1.71.1
-  RELEASE_TAG: holochain-0.2.2
-  HOLOCHAIN_VERSION: 0.2.2
-  LAIR_KEYSTORE_VERSION: 0.3.0
-  HC_VERSION: 0.2.2
-  NIX_STORE_PATH: "/nix/store/ld03l52xq2ssn4x0g5asypsxqls40497-glibc-2.37-8/lib/"
+  RUST_VERSION: 1.75.0
+  RELEASE_TAG: holochain-0.3.0-beta-dev.37
+  HOLOCHAIN_VERSION: 0.3.0-beta-dev.37
+  LAIR_KEYSTORE_VERSION: 0.4.3
+  HC_VERSION: 0.3.0-beta-dev.36
+  NIX_STORE_PATH: "/nix/store/cyrrf49i2hm1w7vn2j945ic3rrzgxbqs-glibc-2.38-44/lib/"
 
 jobs:
   test:
