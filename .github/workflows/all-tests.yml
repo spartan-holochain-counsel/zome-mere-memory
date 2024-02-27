@@ -61,18 +61,15 @@ jobs:
         run: |
           ldd --version
 
-      - name: Upgrade
+      - name: Manually install glib 2.38
         run: |
-          sudo apt-get update
-          sudo apt-get -y upgrade
-
-      - name: Check glib version
-        run: |
-          ldd --version
-
-      - name: Upgrade dist
-        run: |
-          sudo apt-get -y dist-upgrade
+          wget -c https://ftp.gnu.org/gnu/glibc/glibc-2.38.tar.gz
+          tar -zxvf glibc-2.38.tar.gz
+          mkdir glibc-2.38/build
+          cd glibc-2.38/build
+          ../configure --prefix=/opt/glibc
+          make
+          make install
 
       - name: Check glib version
         run: |
