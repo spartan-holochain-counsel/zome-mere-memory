@@ -61,6 +61,10 @@ publish-crate:			test-debug .cargo/credentials
 #
 # Testing
 #
+DEBUG_LEVEL	       ?= warn
+TEST_ENV_VARS		= LOG_LEVEL=$(DEBUG_LEVEL)
+MOCHA_OPTS		= -n enable-source-maps
+
 %/package-lock.json:	%/package.json
 	touch $@
 %/node_modules:		%/package-lock.json
@@ -68,9 +72,7 @@ publish-crate:			test-debug .cargo/credentials
 	touch $@
 
 test:			$(STORAGE_APP) tests/node_modules zomelets/node_modules
-	cd tests; LOG_LEVEL=fatal npx mocha integration/test_api.js
-test-debug:		$(STORAGE_APP) tests/node_modules zomelets/node_modules
-	cd tests; LOG_LEVEL=trace npx mocha integration/test_api.js
+	cd tests; $(TEST_ENV_VARS) npx mocha $(MOCHA_OPTS) integration/test_api.js
 
 
 
@@ -82,18 +84,23 @@ test-docs:
 build-docs:			test-docs
 	cd mere_memory_types; cargo doc
 
-PRE_HDK_VERSION = "=0.2.1"
-NEW_HDK_VERSION = "0.2.2"
+PRE_HDI_VERSION = hdi = "0.4.0-beta-dev.29"
+NEW_HDI_VERSION = hdi = "0.4.0-beta-dev.30"
 
-PRE_HDI_VERSION = "=0.3.1"
-NEW_HDI_VERSION = "0.3.2"
+PRE_HDK_VERSION = hdk = "0.3.0-beta-dev.33"
+NEW_HDK_VERSION = hdk = "0.3.0-beta-dev.34"
+
+PRE_HH_VERSION = version = "0.3.0-beta-dev.23"
+NEW_HH_VERSION = version = "0.3.0-beta-dev.24"
 
 GG_REPLACE_LOCATIONS = ':(exclude)*.lock' Cargo.toml mere_memory_types/ mere_memory/
 
-update-hdk-version:
-	git grep -l '$(PRE_HDK_VERSION)' -- $(GG_REPLACE_LOCATIONS) | xargs sed -i 's|$(PRE_HDK_VERSION)|$(NEW_HDK_VERSION)|g'
 update-hdi-version:
 	git grep -l '$(PRE_HDI_VERSION)' -- $(GG_REPLACE_LOCATIONS) | xargs sed -i 's|$(PRE_HDI_VERSION)|$(NEW_HDI_VERSION)|g'
+update-hdk-version:
+	git grep -l '$(PRE_HDK_VERSION)' -- $(GG_REPLACE_LOCATIONS) | xargs sed -i 's|$(PRE_HDK_VERSION)|$(NEW_HDK_VERSION)|g'
+update-holo-hash-version:
+	git grep -l '$(PRE_HH_VERSION)' -- $(GG_REPLACE_LOCATIONS) | xargs sed -i 's|$(PRE_HH_VERSION)|$(NEW_HH_VERSION)|g'
 
 
 

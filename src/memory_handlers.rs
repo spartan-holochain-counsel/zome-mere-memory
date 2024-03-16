@@ -53,7 +53,7 @@ fn create_memory_entry(memory: MemoryEntry) -> ExternResult<EntryHash> {
 #[hdk_extern]
 fn get_memory_entry(addr: EntryHash) -> ExternResult<MemoryEntry> {
     debug!("Get memory: {}", addr );
-    let record = get( addr.clone(), GetOptions::latest() )?
+    let record = get( addr.clone(), GetOptions::network() )?
         .ok_or(wasm_error!(WasmErrorInner::Guest(format!("Entry not found for address: {}", addr ))))?;
     let memory = MemoryEntry::try_from( &record )?;
 

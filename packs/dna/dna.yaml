@@ -2,9 +2,9 @@
 manifest_version: "1"
 name: storage
 integrity:
-  network_seed: 00000000-0000-0000-0000-000000000000
-  properties: ~
   origin_time: 2022-07-21T00:00:00.000000Z
+  network_seed: ~
+  properties: ~
   zomes:
     - name: mere_memory
       bundled: ../../target/wasm32-unknown-unknown/release/mere_memory.wasm
