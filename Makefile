@@ -49,9 +49,11 @@ npm-use-holo-hash-%:
 #
 # Packages
 #
-preview-crate:			test-debug
+preview-crate:
+	DEBUG_LEVEL=trace make -s test
 	cd mere_memory_types; cargo publish --dry-run --allow-dirty
-publish-crate:			test-debug .cargo/credentials
+publish-crate:			.cargo/credentials
+	DEBUG_LEVEL=trace make -s test
 	cd mere_memory_types; cargo publish
 .cargo/credentials:
 	cp ~/$@ $@
@@ -128,9 +130,12 @@ prepare-zomelets-package:	zomelets/node_modules
 	cd zomelets; npx webpack
 	cd zomelets; MODE=production npx webpack
 	cd zomelets; gzip -kf dist/*.js
-preview-zomelets-package:	clean-files test prepare-zomelets-package
+preview-zomelets-package:	clean-files prepare-zomelets-package
+	DEBUG_LEVEL=trace make -s test
 	cd zomelets; npm pack --dry-run .
-create-zomelets-package:	clean-files test prepare-zomelets-package
+create-zomelets-package:	clean-files prepare-zomelets-package
+	DEBUG_LEVEL=trace make -s test
 	cd zomelets; npm pack .
-publish-zomelets-package:	clean-files test prepare-zomelets-package
+publish-zomelets-package:	clean-files prepare-zomelets-package
+	DEBUG_LEVEL=trace make -s test
 	cd zomelets; npm publish --access public .

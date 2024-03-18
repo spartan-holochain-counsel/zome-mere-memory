@@ -1134,7 +1134,7 @@ dependencies = [
 
 [[package]]
 name = "mere_memory_types"
-version = "0.91.0"
+version = "0.93.0"
 dependencies = [
  "hdi",
  "serde",
