@@ -30,7 +30,7 @@ const DNA_NAME				= "memory";
 
 let client;
 
-describe("Zome: Mere Memory", () => {
+describe("Mere Memory", () => {
     const holochain			= new Holochain({
 	"timeout": 60_000,
 	"default_stdout_loggers": log._level > 3,

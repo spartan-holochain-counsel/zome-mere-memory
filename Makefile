@@ -73,8 +73,18 @@ MOCHA_OPTS		= -n enable-source-maps
 	cd $*; npm install
 	touch $@
 
-test:			$(STORAGE_APP) tests/node_modules zomelets/node_modules
-	cd tests; $(TEST_ENV_VARS) npx mocha $(MOCHA_OPTS) integration/test_api.js
+test:
+	make -s test-integration
+
+test-integration:
+	make -s test-integration-basic
+	make -s test-integration-large-memory
+
+test-integration-basic:		$(STORAGE_APP) tests/node_modules zomelets/node_modules
+	cd tests; $(TEST_ENV_VARS) npx mocha $(MOCHA_OPTS) integration/test_basic.js
+
+test-integration-large-memory:	$(STORAGE_APP) tests/node_modules zomelets/node_modules
+	cd tests; $(TEST_ENV_VARS) npx mocha $(MOCHA_OPTS) integration/test_large_memory.js
 
 
 

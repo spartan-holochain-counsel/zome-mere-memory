@@ -9,7 +9,7 @@ use hdk::prelude::*;
 
 
 #[hdk_extern]
-fn memory_exists(hash: String) -> ExternResult<Option<Vec<EntryHash>>> {
+pub fn memory_exists(hash: String) -> ExternResult<Option<Vec<EntryHash>>> {
     let path = make_hash_path( hash )?;
 
     let links = get_links(
@@ -33,7 +33,7 @@ fn memory_exists(hash: String) -> ExternResult<Option<Vec<EntryHash>>> {
 
 
 #[hdk_extern]
-fn create_memory_entry(memory: MemoryEntry) -> ExternResult<EntryHash> {
+pub fn create_memory_entry(memory: MemoryEntry) -> ExternResult<EntryHash> {
     debug!("Creating 'MemoryEntry' ({} bytes): {}", memory.memory_size, memory.block_addresses.len() );
     let agent_id = agent_info()?.agent_initial_pubkey;
     let entry_hash = hash_entry( &memory )?;
@@ -51,7 +51,7 @@ fn create_memory_entry(memory: MemoryEntry) -> ExternResult<EntryHash> {
 
 
 #[hdk_extern]
-fn get_memory_entry(addr: EntryHash) -> ExternResult<MemoryEntry> {
+pub fn get_memory_entry(addr: EntryHash) -> ExternResult<MemoryEntry> {
     debug!("Get memory: {}", addr );
     let record = get( addr.clone(), GetOptions::network() )?
         .ok_or(wasm_error!(WasmErrorInner::Guest(format!("Entry not found for address: {}", addr ))))?;
@@ -62,7 +62,7 @@ fn get_memory_entry(addr: EntryHash) -> ExternResult<MemoryEntry> {
 
 
 #[hdk_extern]
-fn get_memory_entries_for_agent(maybe_agent_id: Option<AgentPubKey>) -> ExternResult<Vec<MemoryEntry>> {
+pub fn get_memory_entries_for_agent(maybe_agent_id: Option<AgentPubKey>) -> ExternResult<Vec<MemoryEntry>> {
     let agent_id = match maybe_agent_id {
         Some(agent_id) => agent_id,
         None => agent_info()?.agent_initial_pubkey,
@@ -80,4 +80,18 @@ fn get_memory_entries_for_agent(maybe_agent_id: Option<AgentPubKey>) -> ExternRe
         .collect();
 
     Ok( memories )
+}
+
+
+#[hdk_extern]
+pub fn get_memory_bytes(memory_addr: EntryHash) -> ExternResult<Vec<u8>> {
+    let memory_info = get_memory_entry( memory_addr )?;
+
+    let mut chunks = vec![];
+    for block_addr in memory_info.block_addresses.iter() {
+        let block = crate::memory_block_handlers::get_memory_block_entry( block_addr.to_owned() )?;
+        chunks.push( block.bytes.to_owned() );
+    }
+
+    Ok( chunks.into_iter().flatten().collect() )
 }

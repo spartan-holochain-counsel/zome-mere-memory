@@ -89,6 +89,11 @@ export const MereMemoryZomelet		= new Zomelet({
     // Memory CRUD
     "create_memory_entry": true,
     "get_memory_entry": true,
+    async get_memory_bytes ( input ) {
+	const result			= await this.call( new EntryHash(input) );
+
+	return new Uint8Array( result );
+    },
 
     // Other
     async memory_exists ( input ) {
