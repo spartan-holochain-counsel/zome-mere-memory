@@ -62,7 +62,7 @@ describe("Large Memory", () => {
 
 
 function basic_tests () {
-    const repetitions			= 30;
+    const repetitions			= 35;
     const bytes				= fs.readFileSync( MEMORY_PATH );
     const too_big_bytes			= new Uint8Array( bytes.length * repetitions );
 
@@ -91,7 +91,9 @@ function basic_tests () {
 
 	mere_memory_api			= memory.zomes.mere_memory_api.functions;
 
-	await mere_memory_api.make_hash_path( "trigger init" );
+	const hash_path			= await mere_memory_api.make_hash_path( "trigger init" );
+
+	log.normal("Hash path: %s", json.debug(hash_path) );
     });
 
     it("should create a large memory", async function () {
@@ -109,9 +111,17 @@ function basic_tests () {
     it("should get large memory", async function () {
 	this.timeout( 120_000 );
 
-	const memory_bytes		= await mere_memory_api.get_memory_bytes( memory_addr );
+	const [
+	    memory_entry,
+	    compressed_bytes,
+	]				= await mere_memory_api.get_memory_with_bytes( memory_addr );
+	const memory_bytes		= await mere_memory_api.gzip_uncompress( compressed_bytes );
+	const sha256			= await mere_memory_api.calculate_hash( memory_bytes );
 
-	expect( memory_bytes		).to.have.length( memory.memory_size );
+	expect( compressed_bytes.length	).to.equal( memory.memory_size );
+	expect( memory_bytes.length	).to.equal( memory.uncompressed_size );
+	expect( memory_bytes.length	).to.equal( memory_entry.uncompressed_size );
+	expect( memory_entry.hash	).to.equal( sha256 );
     });
 
     after(async function () {

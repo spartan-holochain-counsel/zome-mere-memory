@@ -4,6 +4,12 @@ import {
 import {
     Zomelet,
 }					from '@spartan-hc/zomelets'; // approx. 7kb
+import {
+    intoStruct,
+    OptionType, VecType,
+}					from '@whi/into-struct';
+import { Bytes }			from '@whi/bytes-class';
+
 import { sha256 }			from 'js-sha256'; // approx. 9kb
 import {
     gzipSync,
@@ -16,6 +22,33 @@ function toHex( uint8Array ) {
 	uint8Array, n => n.toString(16).padStart(2, '0')
     ).join('');
 }
+
+
+export const MemoryStruct = {
+    "hash":			String,
+    "compression":		OptionType( String ),
+    "uncompressed_size":	OptionType( Number ),
+    "memory_size":		Number,
+    "block_addresses":		VecType( EntryHash ),
+};
+
+export function MemoryEntry ( entry ) {
+    return intoStruct( entry, MemoryStruct );
+}
+
+
+export const MemoryBlockStruct = {
+    "sequence": {
+	"position":		Number,
+	"length":		Number,
+    },
+    "bytes":			Bytes,
+};
+
+export function MemoryBlockEntry ( entry ) {
+    return intoStruct( entry, MemoryBlockStruct );
+}
+
 
 
 export class Chunker {
@@ -80,19 +113,47 @@ const DEFAULT_OPTS			= {
 };
 
 export const MereMemoryZomelet		= new Zomelet({
-    "make_hash_path": true,
+    async make_hash_path ( input ) {
+	const result			= await this.call( input );
+
+	return result;
+    },
 
     // Memory Block CRUD
-    "create_memory_block_entry": true,
-    "get_memory_block_entry": true,
+    async create_memory_block_entry ( input ) {
+	const result			= await this.call( input );
+
+	return new EntryHash( result );
+    },
+    async get_memory_block_entry ( input ) {
+	const result			= await this.call( new EntryHash(input) );
+
+	return MemoryBlockEntry( result );
+    },
 
     // Memory CRUD
-    "create_memory_entry": true,
-    "get_memory_entry": true,
+    async create_memory_entry ( input ) {
+	const result			= await this.call( input );
+
+	return new EntryHash( result );
+    },
+    async get_memory_entry ( input ) {
+	const result			= await this.call( new EntryHash(input) );
+
+	return MemoryEntry( result );
+    },
     async get_memory_bytes ( input ) {
 	const result			= await this.call( new EntryHash(input) );
 
 	return new Uint8Array( result );
+    },
+    async get_memory_with_bytes ( input ) {
+	const result			= await this.call( new EntryHash(input) );
+
+	return [
+	    MemoryEntry( result[0] ),
+	    new Uint8Array( result[1] ),
+	];
     },
 
     // Other
@@ -120,8 +181,18 @@ export const MereMemoryZomelet		= new Zomelet({
 
 	return await this.functions.memory_exists( hash );
     },
-    calculate_hash ( bytes ) {
+    async calculate_hash ( bytes ) {
 	return sha256.hex( bytes );
+    },
+    async gzip_compress ( input ) {
+	const bytes			= gzipSync( input, {
+	    "mtime": 0,
+	});
+
+	return new Uint8Array( bytes );
+    },
+    async gzip_uncompress ( input ) {
+	return gunzipSync( input );
     },
     async get_existing_memory ( hash, options ) {
 	const matches			= await this.functions.memory_exists_by_hash( hash );
@@ -204,12 +275,8 @@ export const MereMemoryZomelet		= new Zomelet({
 		bytes			= new Uint8Array( result.bytes );
 	    }
 	    else {
-		const compressed_bytes	= gzipSync( bytes, {
-		    "mtime": 0,
-		});
-
 		compression		= "gzip";
-		bytes			= new Uint8Array( compressed_bytes );
+		bytes			= await this.functions.gzip_compress( bytes );
 	    }
 	}
 
@@ -277,7 +344,7 @@ export const MereMemoryZomelet		= new Zomelet({
 	if ( memory.compression !== "gzip" )
 	    return await options.decompress( bytes );
 
-	return gunzipSync( bytes );
+	return await this.functions.gzip_uncompress( bytes );
     }
 });
 

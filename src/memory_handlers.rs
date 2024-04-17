@@ -95,3 +95,12 @@ pub fn get_memory_bytes(memory_addr: EntryHash) -> ExternResult<Vec<u8>> {
 
     Ok( chunks.into_iter().flatten().collect() )
 }
+
+
+#[hdk_extern]
+pub fn get_memory_with_bytes(memory_addr: EntryHash) -> ExternResult<(MemoryEntry, Vec<u8>)> {
+    Ok((
+        get_memory_entry( memory_addr.clone() )?,
+        get_memory_bytes( memory_addr.clone() )?,
+    ))
+}

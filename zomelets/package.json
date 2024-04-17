@@ -23,6 +23,8 @@
   "dependencies": {
     "@spartan-hc/holo-hash": "^0.6.1",
     "@spartan-hc/zomelets": "^0.2.0",
+    "@whi/bytes-class": "^0.1.0",
+    "@whi/into-struct": "^0.2.1",
     "fflate": "^0.8.1",
     "js-sha256": "^0.10.1"
   },
