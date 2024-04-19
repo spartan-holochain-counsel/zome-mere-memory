@@ -39,13 +39,16 @@ describe("Mere Memory", () => {
     before(async function () {
 	this.timeout( 30_000 );
 
-	await holochain.backdrop({
-	    "test": {
+	await holochain.install([
+	    "alice",
+	], {
+	    "app_name": "test",
+	    "bundle": {
 		[DNA_NAME]:	MEMORY_PATH,
 	    },
 	});
 
-	const app_port			= await holochain.appPorts()[0];
+	const app_port			= await holochain.ensureAppPort();
 
 	client				= new AppInterfaceClient( app_port, {
 	    "logging": process.env.LOG_LEVEL || "fatal",
