@@ -191,8 +191,11 @@ export const MereMemoryZomelet		= new Zomelet({
 
 	return new Uint8Array( bytes );
     },
-    async gzip_uncompress ( input ) {
+    async gzip_decompress ( input ) {
 	return gunzipSync( input );
+    },
+    async gzip_uncompress ( input ) {
+	return await this.functions.gzip_decompress( input );
     },
     async decompress_memory ([ memory, bytes ], options ) {
 	const opts			= Object.assign( {}, DEFAULT_OPTS, options );
@@ -206,7 +209,7 @@ export const MereMemoryZomelet		= new Zomelet({
 	if ( memory.compression !== "gzip" )
 	    return await opts.decompress( bytes );
 
-	return await this.functions.gzip_uncompress( bytes );
+	return await this.functions.gzip_decompress( bytes );
 
     },
     async get_existing_memory ( hash, options ) {
