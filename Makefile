@@ -32,14 +32,17 @@ npm-reinstall-local:
 	cd tests; npm uninstall $(NPM_PACKAGE); npm i --save $(LOCAL_PATH)
 npm-reinstall-public:
 	cd tests; npm uninstall $(NPM_PACKAGE); npm i --save $(NPM_PACKAGE)
+
 npm-use-app-interface-client-public:
 npm-use-app-interface-client-local:
 npm-use-app-interface-client-%:
 	NPM_PACKAGE=@spartan-hc/app-interface-client LOCAL_PATH=../../app-interface-client-js make npm-reinstall-$*
+
 npm-use-backdrop-public:
 npm-use-backdrop-local:
 npm-use-backdrop-%:
 	NPM_PACKAGE=@spartan-hc/holochain-backdrop LOCAL_PATH=../../node-holochain-backdrop make npm-reinstall-$*
+
 npm-use-holo-hash-public:
 npm-use-holo-hash-local:
 npm-use-holo-hash-%:
@@ -96,14 +99,14 @@ test-docs:
 build-docs:			test-docs
 	cd mere_memory_types; cargo doc
 
-PRE_HDI_VERSION = hdi = "0.4.0-beta-dev.29"
-NEW_HDI_VERSION = hdi = "0.4.0-beta-dev.30"
+PRE_HDI_VERSION = hdi = "0.4.0-beta-dev.34"
+NEW_HDI_VERSION = hdi = "0.4.0-beta-dev.36"
 
-PRE_HDK_VERSION = hdk = "0.3.0-beta-dev.33"
-NEW_HDK_VERSION = hdk = "0.3.0-beta-dev.34"
+PRE_HDK_VERSION = hdk = "0.3.0-beta-dev.38"
+NEW_HDK_VERSION = hdk = "0.3.0-beta-dev.41"
 
-PRE_HH_VERSION = version = "0.3.0-beta-dev.23"
-NEW_HH_VERSION = version = "0.3.0-beta-dev.24"
+PRE_HH_VERSION = version = "0.3.0-beta-dev.24"
+NEW_HH_VERSION = version = "0.3.0-beta-dev.26"
 
 GG_REPLACE_LOCATIONS = ':(exclude)*.lock' Cargo.toml mere_memory_types/ mere_memory/
 

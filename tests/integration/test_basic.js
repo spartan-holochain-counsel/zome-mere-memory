@@ -28,7 +28,7 @@ const delay				= (n) => new Promise(f => setTimeout(f, n));
 const MEMORY_PATH			= new URL( "../../packs/dna/storage.dna", import.meta.url ).pathname;
 const DNA_NAME				= "memory";
 
-let client;
+let client, installations;
 
 describe("Mere Memory", () => {
     const holochain			= new Holochain({
@@ -39,7 +39,7 @@ describe("Mere Memory", () => {
     before(async function () {
 	this.timeout( 30_000 );
 
-	await holochain.install([
+	installations			= await holochain.install([
 	    "alice",
 	], {
 	    "app_name": "test",
@@ -78,7 +78,8 @@ function basic_tests () {
     before(async function () {
 	this.timeout( 30_000 );
 
-	app_client			= await client.app( "test-alice" );
+	const auth			= installations.alice.test.auth;
+	app_client			= await client.app( auth.token, "test-alice" );
 
 	({
 	    memory,
