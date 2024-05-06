@@ -85,7 +85,7 @@ pub fn get_memory_entries_for_agent(maybe_agent_id: Option<AgentPubKey>) -> Exte
 
 #[hdk_extern]
 pub fn get_memory_bytes(memory_addr: EntryHash) -> ExternResult<Vec<u8>> {
-    let memory_info = get_memory_entry( memory_addr )?;
+    let memory_info = get_memory_entry( memory_addr.clone() )?;
 
     let mut chunks = vec![];
     for block_addr in memory_info.block_addresses.iter() {
@@ -93,7 +93,10 @@ pub fn get_memory_bytes(memory_addr: EntryHash) -> ExternResult<Vec<u8>> {
         chunks.push( block.bytes.to_owned() );
     }
 
-    Ok( chunks.into_iter().flatten().collect() )
+    let bytes : Vec<u8> = chunks.into_iter().flatten().collect();
+
+    debug!("Returning memory ({}) bytes ({})", memory_addr, bytes.len() );
+    Ok( bytes )
 }
 
 

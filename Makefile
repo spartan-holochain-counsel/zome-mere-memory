@@ -41,7 +41,7 @@ npm-use-app-interface-client-%:
 npm-use-backdrop-public:
 npm-use-backdrop-local:
 npm-use-backdrop-%:
-	NPM_PACKAGE=@spartan-hc/holochain-backdrop LOCAL_PATH=../../node-holochain-backdrop make npm-reinstall-$*
+	NPM_PACKAGE=@spartan-hc/holochain-backdrop LOCAL_PATH=../../node-backdrop make npm-reinstall-$*
 
 npm-use-holo-hash-public:
 npm-use-holo-hash-local:
@@ -99,14 +99,14 @@ test-docs:
 build-docs:			test-docs
 	cd mere_memory_types; cargo doc
 
-PRE_HDI_VERSION = hdi = "0.4.0-beta-dev.34"
-NEW_HDI_VERSION = hdi = "0.4.0-beta-dev.36"
+PRE_HDI_VERSION = hdi = "0.4.0-beta-dev.36"
+NEW_HDI_VERSION = hdi = "0.5.0-dev.1"
 
-PRE_HDK_VERSION = hdk = "0.3.0-beta-dev.38"
-NEW_HDK_VERSION = hdk = "0.3.0-beta-dev.41"
+PRE_HDK_VERSION = hdk = "0.3.0-beta-dev.41"
+NEW_HDK_VERSION = hdk = "0.4.0-dev.1"
 
-PRE_HH_VERSION = version = "0.3.0-beta-dev.24"
-NEW_HH_VERSION = version = "0.3.0-beta-dev.26"
+PRE_HH_VERSION = version = "0.3.0-beta-dev.28"
+NEW_HH_VERSION = version = "0.4.0-dev.1"
 
 GG_REPLACE_LOCATIONS = ':(exclude)*.lock' Cargo.toml mere_memory_types/ mere_memory/
 

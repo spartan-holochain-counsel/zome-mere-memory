@@ -33,7 +33,7 @@ let client, installations;
 describe("Large Memory", () => {
     const holochain			= new Holochain({
 	"timeout": 60_000,
-	"default_stdout_loggers": log._level > 3,
+	"default_stdout_loggers": log.level_rank > 3,
     });
 
     before(async function () {
@@ -65,7 +65,7 @@ describe("Large Memory", () => {
 
 
 function basic_tests () {
-    const repetitions			= 35;
+    const repetitions			= 30;
     const bytes				= fs.readFileSync( MEMORY_PATH );
     const too_big_bytes			= new Uint8Array( bytes.length * repetitions );
 

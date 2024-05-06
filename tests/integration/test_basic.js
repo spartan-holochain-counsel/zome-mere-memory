@@ -33,7 +33,7 @@ let client, installations;
 describe("Mere Memory", () => {
     const holochain			= new Holochain({
 	"timeout": 60_000,
-	"default_stdout_loggers": log._level > 3,
+	"default_stdout_loggers": log.level_rank > 3,
     });
 
     before(async function () {
