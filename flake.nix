@@ -1,27 +1,37 @@
 {
-  description = "Nix shell for Holochain app development";
+  description = "Holochain Development Env";
 
   inputs = {
-    nixpkgs.follows = "holonix/nixpkgs";
-    versions.url = "github:holochain/holochain?dir=versions/weekly";
-    holonix.url = "github:holochain/holochain";
-    holonix.inputs.versions.follows = "versions";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
   };
 
-  outputs = inputs@{ holonix, ... }:
-    holonix.inputs.flake-parts.lib.mkFlake { inherit inputs; } {
-      # provide a dev shell for all systems that the holonix flake supports
-      systems = builtins.attrNames holonix.devShells;
+  outputs = { self, nixpkgs }:
+    let
+      system = "x86_64-linux";
+      pkgs = import ./pkgs.nix {
+        pkgs = nixpkgs.legacyPackages.${system};
+        inherit system;
+      };
+    in
+    {
+      devShells.${system} = {
+        default = pkgs.mkShell {
+          buildInputs = with pkgs; [
+            holochain_0-4
+            lair-keystore_0-4-5
+            hc_0-4
 
-      perSystem = { config, system, pkgs, ... }:
-        {
-          devShells.default = pkgs.mkShell {
-            inputsFrom = [ holonix.devShells.${system}.holochainBinaries ];
-            packages = with pkgs; [
-              # add further packages from nixpkgs
-              nodejs
-            ];
-          };
+            rustup
+            cargo
+            rustc
+
+            nodejs_22
+          ];
+
+          shellHook = ''
+            export PS1="\[\e[1;32m\](flake-env)\[\e[0m\] \[\e[1;34m\]\u@\h:\w\[\e[0m\]$ "
+          '';
         };
+      };
     };
 }

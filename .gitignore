@@ -1,5 +1,6 @@
 /.cargo
 /target
+/mere_memory_types/target
 *.happ
 *.dna
 /tests/node_modules
