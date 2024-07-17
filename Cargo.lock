@@ -929,7 +929,6 @@ version = "0.0.0"
 dependencies = [
  "hdk",
  "mere_memory",
- "mere_memory_types",
  "serde",
 ]
 
@@ -973,9 +972,9 @@ dependencies = [
 
 [[package]]
 name = "hdk_derive"
-version = "0.4.0-dev.9"
+version = "0.4.0-dev.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ec8a4f51a32c79ec338daaec277c46ecb51f6b5f65517894c43cb012c6864efe"
+checksum = "fbfd717793514df9e0c44d698e820e68692792fa38c2d721c97c201e5376476e"
 dependencies = [
  "darling 0.14.4",
  "heck 0.5.0",
@@ -1007,9 +1006,9 @@ checksum = "7f24254aa9a54b5c858eaee2f5bccdb46aaf0e486a595ed5fd8f86ba55232a70"
 
 [[package]]
 name = "holo_hash"
-version = "0.4.0-dev.8"
+version = "0.4.0-dev.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4be7094460e2cbf0f2092fb7158ca5c0aeaa6e225fdcf417f091bb994dc8c919"
+checksum = "51425a83caa336a4bd8e6bf4f9b0374ee315fcf4b4c7a103aa2e0c54bb872cad"
 dependencies = [
  "base64 0.22.1",
  "blake2b_simd",
@@ -1025,9 +1024,9 @@ dependencies = [
 
 [[package]]
 name = "holochain_integrity_types"
-version = "0.4.0-dev.9"
+version = "0.4.0-dev.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "048f0ba891006a949a244543954977612b17a0acd7efbeac1914d0e7a119cf8b"
+checksum = "12e2d557cc479814090f4724264880ee7ee5e31e5009c98fe23fcc07857ff724"
 dependencies = [
  "holo_hash",
  "holochain_secure_primitive",
@@ -1131,9 +1130,9 @@ dependencies = [
 
 [[package]]
 name = "holochain_zome_types"
-version = "0.4.0-dev.10"
+version = "0.4.0-dev.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c9338e9b985d6af6e788aa0036040dc98996ddbc7156a9240dc31d87adf81a9a"
+checksum = "f62ed18d860b34574edcc76a467e456775142d3e5ca86fb31907f25680cee965"
 dependencies = [
  "derive_more",
  "holo_hash",
@@ -1265,9 +1264,9 @@ dependencies = [
 
 [[package]]
 name = "kitsune_p2p_bin_data"
-version = "0.4.0-dev.8"
+version = "0.4.0-dev.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "df3f80a3c52eef16808c654490e65d3403b7d2c958ab886e0bc1c74dfb1fb488"
+checksum = "82a36538316e8289894aef8b60b857ea3d05fc8cb447c3bac45f0b22aa9901ce"
 dependencies = [
  "base64 0.22.1",
  "derive_more",
@@ -1280,9 +1279,9 @@ dependencies = [
 
 [[package]]
 name = "kitsune_p2p_block"
-version = "0.4.0-dev.8"
+version = "0.4.0-dev.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "70ada912be6060d3602b2b5d02edc5ae5e655a6f96ba225b237e5645c9416e65"
+checksum = "9caf6d341d99e05c0d1261632d8667f27bad5243889a9675865c6ebce8be975a"
 dependencies = [
  "kitsune_p2p_bin_data",
  "kitsune_p2p_timestamp",
@@ -1491,7 +1490,7 @@ checksum = "1e401f977ab385c9e4e3ab30627d6f26d00e2c73eef317493c4ec6d468726cf8"
 dependencies = [
  "cfg-if",
  "libc",
- "redox_syscall 0.5.2",
+ "redox_syscall 0.5.3",
  "smallvec",
  "windows-targets 0.52.6",
 ]
@@ -1630,9 +1629,9 @@ dependencies = [
 
 [[package]]
 name = "redox_syscall"
-version = "0.5.2"
+version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c82cf8cff14456045f55ec4241383baeff27af886adb72ffb2162f99911de0fd"
+checksum = "2a908a6e00f1fdd0dfd9c0eb08ce85126f6d8bbda50017e74bc4a4b7d4a926a4"
 dependencies = [
  "bitflags 2.6.0",
 ]
