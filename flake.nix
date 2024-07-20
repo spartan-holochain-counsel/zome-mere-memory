@@ -30,6 +30,7 @@
 
           shellHook = ''
             export PS1="\[\e[1;32m\](flake-env)\[\e[0m\] \[\e[1;34m\]\u@\h:\w\[\e[0m\]$ "
+            rustup target add wasm32-unknown-unknown
           '';
         };
       };
