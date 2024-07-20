@@ -1,7 +1,7 @@
 [back to README.md](README.md)
 
-[![](https://img.shields.io/github/checks-status/spartan-holochain-counsel/zome-mere-memory/master?style=flat-square&label=master)](https://github.com/spartan-holochain-counsel/zome-mere-memory/actions/workflows/all-tests.yml)
-[![](https://img.shields.io/github/checks-status/spartan-holochain-counsel/zome-mere-memory/develop?style=flat-square&label=develop)](https://github.com/spartan-holochain-counsel/zome-mere-memory/actions/workflows/all-tests.yml)
+[![](https://img.shields.io/github/actions/workflow/status/spartan-holochain-counsel/zome-mere-memory/all-tests.yml?branch=master&style=flat-square&label=master)](https://github.com/spartan-holochain-counsel/zome-mere-memory/actions/workflows/all-tests.yml?query=branch%3Amaster)
+[![](https://img.shields.io/github/actions/workflow/status/spartan-holochain-counsel/zome-mere-memory/all-tests.yml?branch=develop&style=flat-square&label=develop)](https://github.com/spartan-holochain-counsel/zome-mere-memory/actions/workflows/all-tests.yml?query=branch%3Adevelop)
 
 # Contributing
 
