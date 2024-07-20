@@ -9,14 +9,6 @@ on:
     branches:
       - master
 
-env:
-  RUST_VERSION: 1.75.0
-  RELEASE_TAG: holochain-0.3.0-beta-dev.37
-  HOLOCHAIN_VERSION: 0.3.0-beta-dev.37
-  LAIR_KEYSTORE_VERSION: 0.4.3
-  HC_VERSION: 0.3.0-beta-dev.36
-  NIX_STORE_PATH: "/nix/store/cyrrf49i2hm1w7vn2j945ic3rrzgxbqs-glibc-2.38-44/lib/"
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -25,68 +17,19 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up Rust
-        uses: dtolnay/rust-toolchain@master
+      - name: Install Nix
+        uses: cachix/install-nix-action@v27
         with:
-          toolchain: ${{ env.RUST_VERSION }}
-          targets: wasm32-unknown-unknown
-
-      - name: Holochain Setup
-        uses: supplypike/setup-bin@v3
-        with:
-          name: holochain
-          version: "${{ env.HOLOCHAIN_VERSION }}"
-          uri: https://github.com/spartan-holochain-counsel/holochain-nix-shell-configs/releases/download/${{ env.RELEASE_TAG }}/holochain-${{ env.HOLOCHAIN_VERSION }}
-
-      - name: Lair Keystore Setup
-        uses: supplypike/setup-bin@v3
-        with:
-          name: lair-keystore
-          version: "${{ env.LAIR_KEYSTORE_VERSION }}"
-          uri: https://github.com/spartan-holochain-counsel/holochain-nix-shell-configs/releases/download/${{ env.RELEASE_TAG }}/lair-keystore-${{ env.LAIR_KEYSTORE_VERSION }}
-
-      - name: Holochain CLI Setup
-        uses: supplypike/setup-bin@v3
-        with:
-          name: hc
-          version: "${{ env.HC_VERSION }}"
-          uri: https://github.com/spartan-holochain-counsel/holochain-nix-shell-configs/releases/download/${{ env.RELEASE_TAG }}/hc-${{ env.HC_VERSION }}
-
-      - name: Create expected symlink in nix path dependency
-        run: |
-          sudo mkdir -p ${{ env.NIX_STORE_PATH }}
-          sudo ln -s /lib64/ld-linux-x86-64.so.2 ${{ env.NIX_STORE_PATH }}
-
-      - name: Check glib version
-        run: |
-          ldd --version
-
-      - name: Manually install glib 2.38
-        run: |
-          wget -c https://ftp.gnu.org/gnu/glibc/glibc-2.38.tar.gz
-          tar -zxvf glibc-2.38.tar.gz
-          mkdir glibc-2.38/build
-          cd glibc-2.38/build
-          ../configure --prefix=/opt/glibc
-          make
-          make install
-
-      - name: Check glib version
-        run: |
-          ldd --version
-
-      - name: Test binaries
-        run: |
-          hc --version
-          holochain --version
-          lair-keystore --version
+          nix_path: nixpkgs=channel:nixos-unstable
 
       - name: Build Packages
-        run: make build
+        run: |
+          nix develop --command make build
 
       - name: Run Tests
         run: |
-          output=$(make test-debug | tee >(cat >&2))
+          output=$(DEBUG_LEVEL=trace nix develop --command bash -c 'make test | tee >(cat >&2); exit ${PIPESTATUS[0]}');
+          if [ ${PIPESTATUS[0]} -ne 0 ]; then exit ${PIPESTATUS[0]}; fi
           passing=$(echo "$output" | grep -oP '\d+ passing' | grep -oP '\d+' || echo 0)
           failing=$(echo "$output" | grep -oP '\d+ failing' | grep -oP '\d+' || echo 0)
           pending=$(echo "$output" | grep -oP '\d+ pending' | grep -oP '\d+' || echo 0)
@@ -95,3 +38,4 @@ jobs:
           echo "| Passed   | Failed   | Pending  |" >> $GITHUB_STEP_SUMMARY
           echo "|----------|----------|----------|" >> $GITHUB_STEP_SUMMARY
           echo "| $passing | $failing | $pending |" >> $GITHUB_STEP_SUMMARY
+          if [ "$failing" -ne 0 ]; then exit 1; fi
