@@ -248,7 +248,7 @@ function basic_tests () {
 		    },
 		    "bytes": Array.from(chunk),
 		});
-	    }, "InvalidCommit error: MemoryBlockEntry cannot be larger than 2MB (2,097,152 bytes)" );
+	    }, "MemoryBlockEntry cannot be larger than 2MB (2,097,152 bytes)" );
 	});
 
 	it("should fail to create memory with wrong byte size", async function () {
@@ -266,7 +266,7 @@ function basic_tests () {
 		    "block_addresses": [ block_addr ],
 		    "memory_size":	65,
 		});
-	    }, "InvalidCommit error: MemoryEntry 'memory_size' does not equal the sum of its blocks" );
+	    }, "MemoryEntry 'memory_size' does not equal the sum of its blocks" );
 	});
 
 	it("should fail remember custom compression without decompress option", async function () {

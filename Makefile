@@ -12,14 +12,14 @@ rust_comile_fix:
 
 $(MERE_MEMORY_WASM):	Cargo.toml src/*.rs mere_memory_types/Cargo.toml mere_memory_types/src/*.rs flake.lock
 	@echo "Building zome: $@"; \
-	RUST_BACKTRACE=1 CARGO_TARGET_DIR=target cargo build \
+	RUST_BACKTRACE=1 cargo build \
 		--release --target wasm32-unknown-unknown
 	@touch $@ # Cargo must have a cache somewhere because it doesn't update the file time
 
 $(CORE_WASM):		mere_memory/Cargo.toml mere_memory/src/*.rs flake.lock  mere_memory_types/Cargo.toml mere_memory_types/src/*.rs
 	make rust_comile_fix;
 	@echo "Building zome: $@"; \
-	cd mere_memory; RUST_BACKTRACE=1 CARGO_TARGET_DIR=../target cargo build \
+	cd mere_memory; RUST_BACKTRACE=1 cargo build \
 		--release --target wasm32-unknown-unknown
 
 build:				$(CORE_WASM) $(MERE_MEMORY_WASM)
@@ -53,12 +53,13 @@ npm-use-holo-hash-%:
 # Packages
 #
 preview-crate:
-	DEBUG_LEVEL=trace make -s test
+	DEBUG_LEVEL=debug make -s test
 	cd mere_memory_types; cargo publish --dry-run --allow-dirty
 publish-crate:			.cargo/credentials
-	DEBUG_LEVEL=trace make -s test
+	make -s test
 	cd mere_memory_types; cargo publish
 .cargo/credentials:
+	mkdir -p .cargo
 	cp ~/$@ $@
 
 
@@ -68,7 +69,7 @@ publish-crate:			.cargo/credentials
 #
 DEBUG_LEVEL	       ?= warn
 TEST_ENV_VARS		= LOG_LEVEL=$(DEBUG_LEVEL)
-MOCHA_OPTS		= -n enable-source-maps
+MOCHA_OPTS		= -n enable-source-maps -t 5000
 
 %/package-lock.json:	%/package.json
 	touch $@
@@ -99,14 +100,14 @@ test-docs:
 build-docs:			test-docs
 	cd mere_memory_types; cargo doc
 
-PRE_HDI_VERSION = hdi = "0.5.0-dev.9"
-NEW_HDI_VERSION = hdi = "0.5.0-dev.10"
+PRE_HDI_VERSION = hdi = "0.5.0-dev.10"
+NEW_HDI_VERSION = hdi = "0.5.0-dev.12"
 
 PRE_HDK_VERSION = hdk = "0.4.0-dev.10"
-NEW_HDK_VERSION = hdk = "0.4.0-dev.11"
+NEW_HDK_VERSION = hdk = "0.4.0-dev.14"
 
-PRE_HH_VERSION = version = "0.4.0-dev.8"
-NEW_HH_VERSION = version = "0.4.0-dev.9"
+PRE_HH_VERSION = version = "0.4.0-dev.9"
+NEW_HH_VERSION = version = "0.4.0-dev.11"
 
 GG_REPLACE_LOCATIONS = ':(exclude)*.lock' Cargo.toml mere_memory_types/ mere_memory/
 

@@ -1,5 +1,7 @@
 /.cargo
+/.rustup
 /target
+/mere_memory/target
 /mere_memory_types/target
 *.happ
 *.dna
