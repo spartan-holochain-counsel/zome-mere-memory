@@ -7,7 +7,7 @@ integrity:
   properties: ~
   zomes:
     - name: mere_memory
-      bundled: ../../target/wasm32-unknown-unknown/release/mere_memory.wasm
+      bundled: ../../mere_memory/target/wasm32-unknown-unknown/release/mere_memory.wasm
 coordinator:
   zomes:
     - name: mere_memory_api
