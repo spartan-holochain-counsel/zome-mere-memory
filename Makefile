@@ -6,33 +6,33 @@ STORAGE_APP		= tests/storage.happ
 MERE_MEMORY_WASM	= zomes/mere_memory.wasm
 
 # Coordinator WASMs
-MERE_MEMORY_API_WASM	= zomes/mere_memory_api.wasm
+MERE_MEMORY_CSR_WASM	= zomes/mere_memory_csr.wasm
 
 TARGET			= release
 TARGET_DIR		= target/wasm32-unknown-unknown/release
 
-TYPES_DIR		= types/mere_memory_types
+TYPES_DIR		= crates/mere_memory_types
 INT_DIR			= zomes/mere_memory
-API_DIR			= zomes/mere_memory_api
+CSR_DIR			= zomes/mere_memory_csr
 COMMON_SOURCE_FILES	= Makefile Cargo.toml \
 				$(TYPES_DIR)/Cargo.toml $(TYPES_DIR)/src/*.rs
 INT_SOURCE_FILES	= $(COMMON_SOURCE_FILES) \
 				$(INT_DIR)/Cargo.toml $(INT_DIR)/src/*.rs
-API_SOURCE_FILES	= $(INT_SOURCE_FILES) \
-				$(API_DIR)/Cargo.toml $(API_DIR)/src/*.rs
+CSR_SOURCE_FILES	= $(INT_SOURCE_FILES) \
+				$(CSR_DIR)/Cargo.toml $(CSR_DIR)/src/*.rs
 
 
 #
 # Project
 #
 rust_comile_fix:
-	touch types/mere_memory_types/src/lib.rs # force rebuild otherwise rust fails
+	touch crates/mere_memory_types/src/lib.rs # force rebuild otherwise rust fails
 
 zomes:
 	mkdir $@
 
 $(MERE_MEMORY_WASM):
-$(MERE_MEMORY_API_WASM):
+$(MERE_MEMORY_CSR_WASM):
 zomes/%.wasm:			$(TARGET_DIR)/%.wasm
 	@echo -e "\x1b[38;2mCopying WASM ($<) to 'zomes' directory: $@\x1b[0m"; \
 	cp $< $@
@@ -45,15 +45,15 @@ $(TARGET_DIR)/%.wasm:		$(INT_SOURCE_FILES)
 	    --package $*
 	@touch $@ # Cargo must have a cache somewhere because it doesn't update the file time
 
-$(TARGET_DIR)/%_api.wasm:	zomes $(API_SOURCE_FILES)
-	rm -f zomes/$*_api.wasm
-	@echo -e "\x1b[37mBuilding zome '$*_api' -> $@\x1b[0m";
+$(TARGET_DIR)/%_csr.wasm:	zomes $(CSR_SOURCE_FILES)
+	rm -f zomes/$*_csr.wasm
+	@echo -e "\x1b[37mBuilding zome '$*_csr' -> $@\x1b[0m";
 	RUST_BACKTRACE=1 cargo build --release \
 	    --target wasm32-unknown-unknown \
-	    --package $*_api
+	    --package $*_csr
 	@touch $@ # Cargo must have a cache somewhere because it doesn't update the file time
 
-$(STORAGE_DNA):			tests/dna/dna.yaml $(MERE_MEMORY_WASM) $(MERE_MEMORY_API_WASM)
+$(STORAGE_DNA):			tests/dna/dna.yaml $(MERE_MEMORY_WASM) $(MERE_MEMORY_CSR_WASM)
 	hc dna pack -o $@ $$(dirname $<)
 $(STORAGE_APP):			tests/app/happ.yaml $(STORAGE_DNA)
 	hc app pack -o $@ $$(dirname $<)
@@ -84,10 +84,10 @@ npm-use-holo-hash-%:
 #
 preview-crate:
 	DEBUG_LEVEL=debug make -s test
-	cd mere_memory_types; cargo publish --dry-run --allow-dirty
+	cargo publish -p mere_memory_types --dry-run --allow-dirty
 publish-crate:			.cargo/credentials
 	make -s test
-	cd mere_memory_types; cargo publish
+	cargo publish -p mere_memory_types
 .cargo/credentials:
 	mkdir -p .cargo
 	cp ~/$@ $@
@@ -126,9 +126,9 @@ test-integration-large-memory:	$(STORAGE_DNA) tests/node_modules zomelets/node_m
 # Documentation
 #
 test-docs:
-	cd mere_memory_types; cargo test --doc
+	cargo test -p mere_memory_types --doc
 build-docs:			test-docs
-	cd mere_memory_types; cargo doc
+	cargo doc -p mere_memory_types
 
 PRE_HDI_VERSION = hdi = "0.5.0-dev.10"
 NEW_HDI_VERSION = hdi = "0.5.0-dev.12"

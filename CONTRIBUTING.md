@@ -21,8 +21,8 @@ The purpose of this project is to build Holochain zomes that implement simple by
 Make targets
 ```
 nix develop
-[nix-shell$] make target/wasm32-unknown-unknown/release/mere_memory.wasm
-[nix-shell$] make target/wasm32-unknown-unknown/release/mere_memory_api.wasm
+[nix-shell$] make zomes/mere_memory.wasm
+[nix-shell$] make zomes/mere_memory_csr.wasm
 ```
 
 #### Crate Documentation
@@ -95,7 +95,7 @@ https://docs.rs/mere_memory_types/<Types version>/
 
 Upload WASMS
 - Integrity - `mere_memory.wasm`
-- Coordinatory - `mere_memory_api.wasm`
+- Coordinatory - `mere_memory_csr.wasm`
 
 #### Update Holochain Version Map
 

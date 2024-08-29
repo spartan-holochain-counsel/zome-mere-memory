@@ -1,5 +1,5 @@
 [package]
-name = "mere_memory_api"
+name = "mere_memory_csr"
 version = "0.0.0"
 authors = ["Matthew Brisebois <matthew.brisebois@holo.host>"]
 edition = "2021"
@@ -9,7 +9,7 @@ description = ""
 readme = "README.md"
 
 [lib]
-name = "mere_memory_api"
+name = "mere_memory_csr"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]

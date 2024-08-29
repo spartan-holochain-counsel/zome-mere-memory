@@ -1422,7 +1422,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "mere_memory_api"
+name = "mere_memory_csr"
 version = "0.0.0"
 dependencies = [
  "hdk",

@@ -10,7 +10,7 @@ integrity:
       bundled: ../../zomes/mere_memory.wasm
 coordinator:
   zomes:
-    - name: mere_memory_api
-      bundled: ../../zomes/mere_memory_api.wasm
+    - name: mere_memory_csr
+      bundled: ../../zomes/mere_memory_csr.wasm
       dependencies:
         - name: mere_memory
