@@ -13,7 +13,7 @@ The purpose of this project is to build Holochain zomes that implement simple by
 
 ### Environment
 
-- Developed using rustc rustc `1.71.1 (eb26296b5 2023-08-03)`
+- Developed using rustc rustc `1.80.1 (3f5fd8dd4 2024-08-06)`
 - Enter `nix develop` for development environment dependencies.
 
 ### Building

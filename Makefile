@@ -1,32 +1,62 @@
 
-MERE_MEMORY_WASM	= target/wasm32-unknown-unknown/release/mere_memory_api.wasm
-CORE_WASM		= target/wasm32-unknown-unknown/release/mere_memory.wasm
-STORAGE_DNA		= packs/dna/storage.dna
-STORAGE_APP		= packs/app/Storage.happ
+STORAGE_DNA		= tests/storage.dna
+STORAGE_APP		= tests/storage.happ
+
+# Integrity Zomes
+MERE_MEMORY_WASM	= zomes/mere_memory.wasm
+
+# Coordinator WASMs
+MERE_MEMORY_API_WASM	= zomes/mere_memory_api.wasm
+
+TARGET			= release
+TARGET_DIR		= target/wasm32-unknown-unknown/release
+
+TYPES_DIR		= types/mere_memory_types
+INT_DIR			= zomes/mere_memory
+API_DIR			= zomes/mere_memory_api
+COMMON_SOURCE_FILES	= Makefile Cargo.toml \
+				$(TYPES_DIR)/Cargo.toml $(TYPES_DIR)/src/*.rs
+INT_SOURCE_FILES	= $(COMMON_SOURCE_FILES) \
+				$(INT_DIR)/Cargo.toml $(INT_DIR)/src/*.rs
+API_SOURCE_FILES	= $(INT_SOURCE_FILES) \
+				$(API_DIR)/Cargo.toml $(API_DIR)/src/*.rs
+
 
 #
 # Project
 #
 rust_comile_fix:
-	touch mere_memory_types/src/lib.rs # force rebuild otherwise rust fails
+	touch types/mere_memory_types/src/lib.rs # force rebuild otherwise rust fails
 
-$(MERE_MEMORY_WASM):	Cargo.toml src/*.rs mere_memory_types/Cargo.toml mere_memory_types/src/*.rs flake.lock
-	@echo "Building zome: $@"; \
-	RUST_BACKTRACE=1 cargo build \
-		--release --target wasm32-unknown-unknown
+zomes:
+	mkdir $@
+
+$(MERE_MEMORY_WASM):
+$(MERE_MEMORY_API_WASM):
+zomes/%.wasm:			$(TARGET_DIR)/%.wasm
+	@echo -e "\x1b[38;2mCopying WASM ($<) to 'zomes' directory: $@\x1b[0m"; \
+	cp $< $@
+
+$(TARGET_DIR)/%.wasm:		$(INT_SOURCE_FILES)
+	rm -f zomes/$*.wasm
+	@echo -e "\x1b[37mBuilding zome '$*' -> $@\x1b[0m";
+	RUST_BACKTRACE=1 cargo build --release \
+	    --target wasm32-unknown-unknown \
+	    --package $*
 	@touch $@ # Cargo must have a cache somewhere because it doesn't update the file time
 
-$(CORE_WASM):		mere_memory/Cargo.toml mere_memory/src/*.rs flake.lock  mere_memory_types/Cargo.toml mere_memory_types/src/*.rs
-	make rust_comile_fix;
-	@echo "Building zome: $@"; \
-	cd mere_memory; RUST_BACKTRACE=1 cargo build \
-		--release --target wasm32-unknown-unknown
+$(TARGET_DIR)/%_api.wasm:	zomes $(API_SOURCE_FILES)
+	rm -f zomes/$*_api.wasm
+	@echo -e "\x1b[37mBuilding zome '$*_api' -> $@\x1b[0m";
+	RUST_BACKTRACE=1 cargo build --release \
+	    --target wasm32-unknown-unknown \
+	    --package $*_api
+	@touch $@ # Cargo must have a cache somewhere because it doesn't update the file time
 
-build:				$(CORE_WASM) $(MERE_MEMORY_WASM)
-$(STORAGE_DNA):			$(CORE_WASM) $(MERE_MEMORY_WASM) packs/dna/dna.yaml Cargo.toml mere_memory_types/Cargo.toml mere_memory_types/src/*.rs
-	hc dna pack packs/dna/
-$(STORAGE_APP):			$(STORAGE_DNA) packs/app/happ.yaml
-	hc app pack packs/app/
+$(STORAGE_DNA):			tests/dna/dna.yaml $(MERE_MEMORY_WASM) $(MERE_MEMORY_API_WASM)
+	hc dna pack -o $@ $$(dirname $<)
+$(STORAGE_APP):			tests/app/happ.yaml $(STORAGE_DNA)
+	hc app pack -o $@ $$(dirname $<)
 
 npm-reinstall-local:
 	cd tests; npm uninstall $(NPM_PACKAGE); npm i --save $(LOCAL_PATH)
@@ -84,10 +114,10 @@ test-integration:
 	make -s test-integration-basic
 	make -s test-integration-large-memory
 
-test-integration-basic:		$(STORAGE_APP) tests/node_modules zomelets/node_modules
+test-integration-basic:		$(STORAGE_DNA) tests/node_modules zomelets/node_modules
 	cd tests; $(TEST_ENV_VARS) npx mocha $(MOCHA_OPTS) integration/test_basic.js
 
-test-integration-large-memory:	$(STORAGE_APP) tests/node_modules zomelets/node_modules
+test-integration-large-memory:	$(STORAGE_DNA) tests/node_modules zomelets/node_modules
 	cd tests; $(TEST_ENV_VARS) npx mocha $(MOCHA_OPTS) integration/test_large_memory.js
 
 
@@ -109,7 +139,7 @@ NEW_HDK_VERSION = hdk = "0.4.0-dev.14"
 PRE_HH_VERSION = version = "0.4.0-dev.9"
 NEW_HH_VERSION = version = "0.4.0-dev.11"
 
-GG_REPLACE_LOCATIONS = ':(exclude)*.lock' Cargo.toml mere_memory_types/ mere_memory/
+GG_REPLACE_LOCATIONS = ':(exclude)*.lock' types/ zomes/ dnas/ tests/
 
 update-hdi-version:
 	git grep -l '$(PRE_HDI_VERSION)' -- $(GG_REPLACE_LOCATIONS) | xargs sed -i 's|$(PRE_HDI_VERSION)|$(NEW_HDI_VERSION)|g'

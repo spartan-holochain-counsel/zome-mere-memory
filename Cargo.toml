@@ -1,0 +1,20 @@
+[workspace]
+members = [
+  "types/*",
+  "zomes/*"
+]
+resolver = "2"
+
+[workspace.dependencies]
+serde = "1"
+hdi = { version = "=0.5.0-dev.12" }
+hdk = { version = "=0.4.0-dev.14" }
+
+[workspace.dependencies.mere_memory_types]
+path = "types/mere_memory_types"
+
+[workspace.dependencies.mere_memory]
+path = "zomes/mere_memory"
+
+[workspace.dependencies.mere_memory_api]
+path = "zomes/mere_memory_api"

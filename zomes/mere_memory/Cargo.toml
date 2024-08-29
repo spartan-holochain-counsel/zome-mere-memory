@@ -13,4 +13,4 @@ name = "mere_memory"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-mere_memory_types = {path = "../mere_memory_types"}
+mere_memory_types = { workspace = true }

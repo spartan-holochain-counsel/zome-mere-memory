@@ -25,7 +25,7 @@ import { expect_reject,
 	 linearSuite }			from '../utils.js';
 
 const delay				= (n) => new Promise(f => setTimeout(f, n));
-const MEMORY_PATH			= new URL( "../../packs/dna/storage.dna", import.meta.url ).pathname;
+const MEMORY_PATH			= new URL( "../storage.dna", import.meta.url ).pathname;
 const DNA_NAME				= "memory";
 
 let client, installations;
