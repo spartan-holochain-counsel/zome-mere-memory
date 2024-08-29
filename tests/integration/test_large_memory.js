@@ -25,7 +25,7 @@ import { expect_reject,
 	 linearSuite }			from '../utils.js';
 
 const delay				= (n) => new Promise(f => setTimeout(f, n));
-const MEMORY_PATH			= new URL( "../../packs/dna/storage.dna", import.meta.url ).pathname;
+const MEMORY_PATH			= new URL( "../storage.dna", import.meta.url ).pathname;
 const DNA_NAME				= "memory";
 
 let client, installations;
@@ -75,7 +75,7 @@ function basic_tests () {
     }
 
     let app_client;
-    let mere_memory_api;
+    let mere_memory_csr;
     let memory;
     let memory_addr;
 
@@ -89,13 +89,13 @@ function basic_tests () {
 	    memory,
 	}				= app_client.createInterface({
 	    [DNA_NAME]: {
-		"mere_memory_api":	MereMemoryZomelet,
+		"mere_memory_csr":	MereMemoryZomelet,
 	    },
 	}));
 
-	mere_memory_api			= memory.zomes.mere_memory_api.functions;
+	mere_memory_csr			= memory.zomes.mere_memory_csr.functions;
 
-	const hash_path			= await mere_memory_api.make_hash_path( "trigger init" );
+	const hash_path			= await mere_memory_csr.make_hash_path( "trigger init" );
 
 	log.normal("Hash path: %s", json.debug(hash_path) );
     });
@@ -103,11 +103,11 @@ function basic_tests () {
     it("should create a large memory", async function () {
 	this.timeout( 120_000 );
 
-	memory_addr			= await mere_memory_api.save( too_big_bytes );
+	memory_addr			= await mere_memory_csr.save( too_big_bytes );
 
 	log.normal("New memory address: %s", memory_addr );
 
-	memory				= await mere_memory_api.get_memory_entry( memory_addr );
+	memory				= await mere_memory_csr.get_memory_entry( memory_addr );
 
 	log.normal("New memory entry: %s", json.debug(memory) );
     });
@@ -118,9 +118,9 @@ function basic_tests () {
 	const [
 	    memory_entry,
 	    compressed_bytes,
-	]				= await mere_memory_api.get_memory_with_bytes( memory_addr );
-	const memory_bytes		= await mere_memory_api.gzip_uncompress( compressed_bytes );
-	const sha256			= await mere_memory_api.calculate_hash( memory_bytes );
+	]				= await mere_memory_csr.get_memory_with_bytes( memory_addr );
+	const memory_bytes		= await mere_memory_csr.gzip_uncompress( compressed_bytes );
+	const sha256			= await mere_memory_csr.calculate_hash( memory_bytes );
 
 	expect( compressed_bytes.length	).to.equal( memory.memory_size );
 	expect( memory_bytes.length	).to.equal( memory.uncompressed_size );

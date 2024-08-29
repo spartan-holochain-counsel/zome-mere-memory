@@ -1,8 +1,9 @@
 /.cargo
+/.rustup
 /target
-/mere_memory_types/target
-*.happ
-*.dna
+/tests/*.happ
+/tests/*.dna
 /tests/node_modules
 /zomelets/dist
 /zomelets/node_modules
+/zomes/*.wasm

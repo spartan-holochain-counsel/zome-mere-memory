@@ -1,18 +1,20 @@
-[package]
-name = "hc_zome_mere_memory"
-version = "0.0.0"
-authors = ["Matthew Brisebois <matthew.brisebois@holo.host>"]
-edition = "2021"
-license = "CAL-1.0"
-repository = "https://github.com/spartan-holochain-counsel/hc-zome-mere-memory"
-description = ""
-readme = "README.md"
+[workspace]
+members = [
+  "crates/*",
+  "zomes/*"
+]
+resolver = "2"
 
-[lib]
-name = "mere_memory_api"
-crate-type = ["cdylib", "rlib"]
-
-[dependencies]
-mere_memory = {path = "./mere_memory"}
-hdk = "0.4.0-dev.10"
+[workspace.dependencies]
 serde = "1"
+hdi = { version = "=0.5.0-dev.12" }
+hdk = { version = "=0.4.0-dev.14" }
+
+[workspace.dependencies.mere_memory_types]
+path = "crates/mere_memory_types"
+
+[workspace.dependencies.mere_memory]
+path = "zomes/mere_memory"
+
+[workspace.dependencies.mere_memory_api]
+path = "zomes/mere_memory_api"
