@@ -107,6 +107,8 @@ MOCHA_OPTS		= -n enable-source-maps -t 5000
 	cd $*; npm install
 	touch $@
 
+# 'build' target used by workflow
+build:			$(CORE_WASM) $(MERE_MEMORY_WASM)
 test:
 	make -s test-integration
 
