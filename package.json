@@ -1,5 +1,5 @@
 {
-  "name": "tests",
+  "name": "zome-mere-memory",
   "version": "1.0.0",
   "description": "",
   "type": "module",
@@ -9,11 +9,11 @@
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
+  "devDependencies": {
     "@spartan-hc/app-interface-client": "^0.7.2",
     "@spartan-hc/holo-hash": "^0.7.0",
-    "@spartan-hc/holochain-backdrop": "^4.5.1",
-    "@spartan-hc/mere-memory-zomelets": "file:../zomelets",
+    "@spartan-hc/holochain-backdrop": "^4.6.0",
+    "@spartan-hc/mere-memory-zomelets": "file:zomelets",
     "@whi/json": "^0.1.7",
     "@whi/weblogger": "^0.4.0",
     "chai": "^4.3.4",

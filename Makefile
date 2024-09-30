@@ -30,7 +30,6 @@ rust_comile_fix:
 
 zomes:
 	mkdir $@
-
 $(MERE_MEMORY_WASM):
 $(MERE_MEMORY_CSR_WASM):
 zomes/%.wasm:			$(TARGET_DIR)/%.wasm
@@ -59,9 +58,9 @@ $(STORAGE_APP):			tests/app/happ.yaml $(STORAGE_DNA)
 	hc app pack -o $@ $$(dirname $<)
 
 npm-reinstall-local:
-	cd tests; npm uninstall $(NPM_PACKAGE); npm i --save $(LOCAL_PATH)
+	cd tests; npm uninstall $(NPM_PACKAGE); npm i --save-dev $(LOCAL_PATH)
 npm-reinstall-public:
-	cd tests; npm uninstall $(NPM_PACKAGE); npm i --save $(NPM_PACKAGE)
+	cd tests; npm uninstall $(NPM_PACKAGE); npm i --save-dev $(NPM_PACKAGE)
 
 npm-use-app-interface-client-public:
 npm-use-app-interface-client-local:
@@ -101,6 +100,11 @@ DEBUG_LEVEL	       ?= warn
 TEST_ENV_VARS		= LOG_LEVEL=$(DEBUG_LEVEL)
 MOCHA_OPTS		= -n enable-source-maps -t 5000
 
+package-lock.json:	package.json
+	touch $@
+node_modules:		package-lock.json
+	npm install
+	touch $@
 %/package-lock.json:	%/package.json
 	touch $@
 %/node_modules:		%/package-lock.json
@@ -116,10 +120,10 @@ test-integration:
 	make -s test-integration-basic
 	make -s test-integration-large-memory
 
-test-integration-basic:		$(STORAGE_DNA) tests/node_modules zomelets/node_modules
+test-integration-basic:		$(STORAGE_DNA) node_modules zomelets/node_modules
 	cd tests; $(TEST_ENV_VARS) npx mocha $(MOCHA_OPTS) integration/test_basic.js
 
-test-integration-large-memory:	$(STORAGE_DNA) tests/node_modules zomelets/node_modules
+test-integration-large-memory:	$(STORAGE_DNA) node_modules zomelets/node_modules
 	cd tests; $(TEST_ENV_VARS) npx mocha $(MOCHA_OPTS) integration/test_large_memory.js
 
 

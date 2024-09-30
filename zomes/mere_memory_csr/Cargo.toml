@@ -5,7 +5,7 @@ authors = ["Matthew Brisebois <matthew.brisebois@holo.host>"]
 edition = "2021"
 license = "CAL-1.0"
 repository = "https://github.com/spartan-holochain-counsel/hc-zome-mere-memory"
-description = ""
+description = "Official coordinator Mere Memory"
 readme = "README.md"
 
 [lib]

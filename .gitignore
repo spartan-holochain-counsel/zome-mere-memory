@@ -1,5 +1,6 @@
 /.cargo
 /.rustup
+/.devhub
 /node_modules
 /target
 /tests/*.happ
