@@ -1,0 +1,7 @@
+{
+    "version": "1",
+    "zomes": {
+        "mere_memory": "zomes/mere_memory/zome.json",
+        "mere_memory_csr": "zomes/mere_memory_csr/zome.json"
+    }
+}
