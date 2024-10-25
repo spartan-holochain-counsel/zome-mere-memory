@@ -2,7 +2,7 @@
     "type": "zome",
     "version": "0.101.0",
     "target": "../mere_memory_csr.wasm",
-    "name": "mere_memory_csr",
+    "name": "@spartan-hc/mere_memory_csr",
     "title": "Mere Memory CSR",
     "description": "Official coordinator Mere Memory",
     "zome_type": "coordinator",
