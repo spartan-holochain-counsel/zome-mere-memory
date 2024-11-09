@@ -1,7 +1,7 @@
 {
     "type": "zome",
     "version": "0.101.0",
-    "target": "../mere_memory.wasm",
+    "wasm": "../mere_memory.wasm",
     "name": "@spartan-hc/mere_memory",
     "title": "Mere Memory",
     "description": "Integrity rules for simple byte storage",
