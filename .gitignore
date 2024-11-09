@@ -1,9 +1,10 @@
 /.cargo
 /.rustup
+/.devhub
+/node_modules
 /target
 /tests/*.happ
 /tests/*.dna
-/tests/node_modules
 /zomelets/dist
 /zomelets/node_modules
 /zomes/*.wasm

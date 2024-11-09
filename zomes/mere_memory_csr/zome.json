@@ -1,0 +1,12 @@
+{
+    "type": "zome",
+    "version": "0.101.0",
+    "wasm": "../mere_memory_csr.wasm",
+    "name": "@spartan-hc/mere_memory_csr",
+    "title": "Mere Memory CSR",
+    "description": "Official coordinator Mere Memory",
+    "zome_type": "coordinator",
+    "maintainer": null,
+    "tags": [],
+    "metadata": {}
+}
