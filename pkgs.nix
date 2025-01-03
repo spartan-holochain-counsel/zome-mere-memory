@@ -3,8 +3,8 @@
 import (pkgs.fetchFromGitHub {
   owner = "pjkundert";
   repo = "nix-overlay";
-  rev = "67613f9aff8428efe87e0e6cad26547524c5f736";
-  sha256 = "sha256-pI2JZlygJk5gSkdneReCwXpwGmysvngkhYSiuY5zaO8=";
+  rev = "b0d96b12bca8aee8f664f6c0c3f899ed80460feb";
+  sha256 = "sha256-oWHdfvWBvA1lCZZe3UMsqQ4dAv6zvpfPNsjOXbjuCDs=";
 }) {
   inherit pkgs;
   inherit system;
