@@ -136,21 +136,11 @@ test-docs:
 build-docs:			test-docs
 	cargo doc -p mere_memory_types
 
-PRE_HDI_VERSION = hdi = "0.5.0-dev.10"
-NEW_HDI_VERSION = hdi = "0.5.0-dev.12"
+PRE_HH_VERSION = version = "0.4.0"
+NEW_HH_VERSION = version = "0.4.1"
 
-PRE_HDK_VERSION = hdk = "0.4.0-dev.10"
-NEW_HDK_VERSION = hdk = "0.4.0-dev.14"
+GG_REPLACE_LOCATIONS = ':(exclude)*.lock' crates/
 
-PRE_HH_VERSION = version = "0.4.0-dev.9"
-NEW_HH_VERSION = version = "0.4.0-dev.11"
-
-GG_REPLACE_LOCATIONS = ':(exclude)*.lock' types/ zomes/ dnas/ tests/
-
-update-hdi-version:
-	git grep -l '$(PRE_HDI_VERSION)' -- $(GG_REPLACE_LOCATIONS) | xargs sed -i 's|$(PRE_HDI_VERSION)|$(NEW_HDI_VERSION)|g'
-update-hdk-version:
-	git grep -l '$(PRE_HDK_VERSION)' -- $(GG_REPLACE_LOCATIONS) | xargs sed -i 's|$(PRE_HDK_VERSION)|$(NEW_HDK_VERSION)|g'
 update-holo-hash-version:
 	git grep -l '$(PRE_HH_VERSION)' -- $(GG_REPLACE_LOCATIONS) | xargs sed -i 's|$(PRE_HH_VERSION)|$(NEW_HH_VERSION)|g'
 
