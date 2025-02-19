@@ -683,14 +683,14 @@ checksum = "78ca9ab1a0babb1e7d5695e3530886289c18cf2f87ec19a575a0abdce112e3a3"
 
 [[package]]
 name = "mere_memory"
-version = "0.0.0"
+version = "0.102.0"
 dependencies = [
  "mere_memory_types",
 ]
 
 [[package]]
 name = "mere_memory_csr"
-version = "0.0.0"
+version = "0.102.0"
 dependencies = [
  "hdk",
  "mere_memory",
@@ -699,7 +699,7 @@ dependencies = [
 
 [[package]]
 name = "mere_memory_types"
-version = "0.98.0"
+version = "0.102.0"
 dependencies = [
  "hdi",
  "holo_hash",

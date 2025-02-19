@@ -5,6 +5,7 @@
 /target
 /tests/*.happ
 /tests/*.dna
+/tests/node_modules
 /zomelets/dist
 /zomelets/node_modules
 /zomes/*.wasm
