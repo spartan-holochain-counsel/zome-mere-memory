@@ -1,6 +1,6 @@
 [package]
 name = "mere_memory"
-version = "0.0.0"
+version = "0.102.0"
 authors = ["Matthew Brisebois <matthew.brisebois@holo.host>"]
 edition = "2021"
 license = "CAL-1.0"

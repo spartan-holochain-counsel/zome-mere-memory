@@ -1,6 +1,6 @@
 [package]
 name = "mere_memory_types"
-version = "0.98.0"
+version = "0.102.0"
 authors = ["Matthew Brisebois <matthew.brisebois@holo.host>"]
 edition = "2021"
 license = "CAL-1.0"
@@ -13,7 +13,7 @@ name = "mere_memory_types"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-hdi = "0.5.0"
+hdi = "0.5.1"
 serde = "1"
 
 [dev-dependencies]
